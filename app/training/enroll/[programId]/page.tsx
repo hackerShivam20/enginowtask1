@@ -264,8 +264,8 @@ export default function EnrollmentPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Training Programs
         </Link>
-        <h1 className="text-3xl font-bold">Enroll in {program.title}</h1>
-        <p className="text-muted-foreground mt-2">Complete your enrollment to start your journey in {program.title}</p>
+        <h1 className="text-3xl font-bold">Enroll in Database Management Systems</h1>
+        <p className="text-muted-foreground mt-2">Complete your enrollment to start your journey in Database Management Systems</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -538,7 +538,7 @@ export default function EnrollmentPage() {
         <div className="lg:col-span-1">
           <Card className="sticky top-8">
             <CardHeader>
-              <CardTitle className="text-lg">{program.title}</CardTitle>
+              <CardTitle className="text-lg">Database Management Systems</CardTitle>
               <CardDescription>{program.duration} • Comprehensive Training</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

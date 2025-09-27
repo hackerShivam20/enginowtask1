@@ -17,13 +17,13 @@ const blogPosts = [
     excerpt: "A comprehensive guide to analyzing algorithm efficiency using Big O notation and practical examples.",
     content: `
       <p>Time complexity is a fundamental concept in computer science that helps us analyze and compare the efficiency of algorithms. It provides a way to express how the runtime of an algorithm grows as the size of the input increases.</p>
-      
-      <h2>What is Big O Notation?</h2>
+
+      <h3><strong>What is Big O Notation?</strong></h3>
       <p>Big O notation is a mathematical notation that describes the limiting behavior of a function when the argument tends towards a particular value or infinity. In computer science, it's used to classify algorithms according to how their run time or space requirements grow as the input size grows.</p>
       
       <p>For example, if an algorithm has a time complexity of O(n), it means the algorithm's runtime grows linearly with the size of the input. If the input size doubles, the runtime will also roughly double.</p>
-      
-      <h2>Common Time Complexities</h2>
+
+      <h3><strong>Common Time Complexities</strong></h3>
       <ul>
         <li><strong>O(1)</strong> - Constant time: The algorithm takes the same amount of time regardless of the input size.</li>
         <li><strong>O(log n)</strong> - Logarithmic time: The algorithm's runtime grows logarithmically with the input size.</li>
@@ -33,7 +33,7 @@ const blogPosts = [
         <li><strong>O(2^n)</strong> - Exponential time: The runtime doubles with each addition to the input size.</li>
       </ul>
       
-      <h2>Why Time Complexity Matters</h2>
+      <h3><strong>Why Time Complexity Matters</strong></h3>
       <p>Understanding time complexity is crucial for several reasons:</p>
       <ol>
         <li>It helps you choose the most efficient algorithm for a specific problem.</li>

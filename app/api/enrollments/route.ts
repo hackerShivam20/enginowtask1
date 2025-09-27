@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import connectDB from "@/lib/mongodb"
 import Enrollment from "@/models/Enrollment"
+import nodemailer from "nodemailer";
 
 // Valid referral codes
 const VALID_REFERRAL_CODES = [
@@ -162,6 +163,60 @@ export async function POST(request: NextRequest) {
         duration: "TBD",
         price: "TBD",
       }
+
+          // 📧 Send email to care@enginow.in
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: "care@enginow.in",
+        subject: `New Enrollment: ${programData.title}`,
+        html: `
+          <h2>New Enrollment Received</h2>
+          <p><strong>Program:</strong> ${programData.title}</p>
+          <p><strong>Name:</strong> ${body.firstName} ${body.lastName}</p>
+          <p><strong>Email:</strong> ${body.email}</p>
+          <p><strong>Phone:</strong> ${body.phone}</p>
+          <p><strong>City/State:</strong> ${body.city}, ${body.state}</p>
+          <p><strong>Education:</strong> ${body.education}</p>
+          <p><strong>Experience:</strong> ${body.experience}</p>
+          ${
+            body.referralCode
+              ? `<p><strong>Referral Code:</strong> ${body.referralCode} (${
+                  body.referralCodeValid ? "Valid" : "Invalid"
+                })</p>`
+              : ""
+          }
+          <p><strong>Duration:</strong> ${programData.duration}</p>
+          <p><strong>Price:</strong> ₹${programData.price}</p>
+          <hr />
+          <p>Enrollment ID: ${enrollment._id}</p>
+        `,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log("✅ Email sent to care@enginow.in");
+    } catch (mailError) {
+      console.error("❌ Failed to send email:", mailError);
+      // continue; don’t block the response even if mail fails
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: enrollment,
+        message:
+          "Enrollment created successfully! You will be contacted within 24-48 hours.",
+      },
+      { status: 201 }
+    );
 
       // Log enrollment details for manual follow-up
       console.log("\n🎉 NEW ENROLLMENT SUCCESS!")

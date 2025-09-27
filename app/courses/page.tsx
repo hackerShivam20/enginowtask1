@@ -10,6 +10,7 @@ import { Search, Filter, BookOpen } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { AnimatedElement } from "@/components/ui/animated-element"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState("all")
@@ -280,9 +281,12 @@ export default function CoursesPage() {
                     </a>
                   </Button>
                 ) : (
-                  <Button size="sm" className="bg-gradient-to-r from-primary to-purple-dark hover:opacity-90">
-                    Coming Soon
-                  </Button>
+                  <Link href={`/courses/enroll/${course.id}`}>
+                    <Button size="sm" className="bg-gradient-to-r from-primary to-purple-dark hover:opacity-90">
+                      Enroll Now
+                    </Button>
+                  </Link>
+
                 )}
               </CardFooter>
             </Card>

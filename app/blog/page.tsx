@@ -200,7 +200,7 @@ export default function BlogPage() {
 
       {visiblePosts < blogPosts.length && (
         <div className="flex justify-center mt-12">
-          <Button variant="outline" onClick={handleLoadMore}>
+          <Button variant="outline"  onClick={handleLoadMore}>
             Load More Articles
           </Button>
         </div>
