@@ -48,7 +48,7 @@ export default function TrainingPage() {
   const fetchPrograms = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/courses/programs?category=${selectedCategory}`)
+      const response = await fetch(`/api/training/programs?category=${selectedCategory}`)
       const result = await response.json()
 
       if (result.success) {
