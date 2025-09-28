@@ -158,7 +158,9 @@ export async function POST(request: NextRequest) {
       console.log("✅ Enrollment saved successfully with ID:", enrollment._id)
 
       // Get program data for response
-      const programData = TRAINING_PROGRAMS[body.programId] || {
+      type ProgramId = keyof typeof TRAINING_PROGRAMS;
+      const programId: ProgramId = body.programId as ProgramId;
+      const programData = TRAINING_PROGRAMS[programId] || {
         title: "Training Program",
         duration: "TBD",
         price: "TBD",
@@ -249,8 +251,13 @@ export async function POST(request: NextRequest) {
       console.error("❌ Error saving enrollment:", saveError)
 
       // Handle specific MongoDB errors
-      if (saveError.name === "ValidationError") {
-        const validationErrors = Object.values(saveError.errors).map((err: any) => err.message)
+      if (
+        typeof saveError === "object" &&
+        saveError !== null &&
+        "name" in saveError &&
+        (saveError as any).name === "ValidationError"
+      ) {
+        const validationErrors = Object.values((saveError as any).errors).map((err: any) => err.message)
         console.error("❌ Validation errors:", validationErrors)
         return NextResponse.json(
           {
@@ -261,7 +268,7 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      if (saveError.code === 11000) {
+      if (typeof saveError === "object" && saveError !== null && "code" in saveError && (saveError as any).code === 11000) {
         console.error("❌ Duplicate key error")
         return NextResponse.json(
           {

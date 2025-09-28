@@ -162,7 +162,7 @@ export default function EnrollmentPage() {
         referralCodeValid: referralCodeValid,
       }
 
-      const response = await fetch("/api/enrollments", {
+      const response = await fetch("/api/training/enroll", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
