@@ -14,17 +14,45 @@ export default function Footer() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   if (!email) return
+  //   setIsSubmitting(true)
+  //   setTimeout(() => {
+  //     setIsSubmitting(false)
+  //     setIsSubmitted(true)
+  //     setEmail("")
+  //     setTimeout(() => setIsSubmitted(false), 3000)
+  //   }, 1000)
+  // }
+ 
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  if (!email) return
+  setIsSubmitting(true)
+
+  try {
+    const res = await fetch("/api/newsletter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+
+    if (res.ok) {
       setIsSubmitted(true)
       setEmail("")
       setTimeout(() => setIsSubmitted(false), 3000)
-    }, 1000)
+    } else {
+      const data = await res.json()
+      alert(data.error || "Something went wrong")
+    }
+  } catch (err) {
+    console.error(err)
+    alert("Something went wrong")
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
   return (
     <footer className="w-full bg-gradient-mesh border-t border-white/20">

@@ -16,7 +16,7 @@ export default function JobsPage() {
 
   const jobs = [
     {
-      id: 1,
+      id: "1",
       title: "Senior Full Stack Developer",
       company: "TechCorp Solutions",
       location: "Bangalore, India",
@@ -29,7 +29,7 @@ export default function JobsPage() {
       applicants: 45,
     },
     {
-      id: 2,
+      id: "2",
       title: "Data Scientist",
       company: "Analytics Pro",
       location: "Mumbai, India",
@@ -42,7 +42,7 @@ export default function JobsPage() {
       applicants: 32,
     },
     {
-      id: 3,
+      id: "3",
       title: "Frontend Developer Intern",
       company: "StartupXYZ",
       location: "Remote",
@@ -55,7 +55,7 @@ export default function JobsPage() {
       applicants: 78,
     },
     {
-      id: 4,
+      id: "4",
       title: "DevOps Engineer",
       company: "CloudTech Inc",
       location: "Hyderabad, India",
@@ -68,7 +68,7 @@ export default function JobsPage() {
       applicants: 23,
     },
     {
-      id: 5,
+      id: "5",
       title: "Mobile App Developer",
       company: "AppMakers Ltd",
       location: "Pune, India",
@@ -254,13 +254,7 @@ export default function JobsPage() {
             </CardContent>
             <CardFooter>
               <Button asChild className="w-full">
-                <Link
-                  href="https://www.linkedin.com/company/enginow"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Apply Now
-                </Link>
+                <Link href={`/jobs/${job.id}`}>Apply Now</Link>
               </Button>
             </CardFooter>
           </Card>
