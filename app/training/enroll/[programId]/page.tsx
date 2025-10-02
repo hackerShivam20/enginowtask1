@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
+import { useEnrollment } from "@/context/EnrollmentContext"
 
 interface TrainingProgram {
   id: string
@@ -28,6 +29,8 @@ interface TrainingProgram {
 }
 
 export default function EnrollmentPage() {
+
+  const { setProgramData } = useEnrollment()
   const params = useParams()
   const router = useRouter()
   const { toast } = useToast()
@@ -64,6 +67,7 @@ export default function EnrollmentPage() {
       const result = await response.json()
 
       if (result.success) {
+        console.log("Fetched program:", result.data);
         setProgram(result.data)
       } else {
         toast({
@@ -256,6 +260,16 @@ export default function EnrollmentPage() {
     )
   }
 
+    const handleProceed = () => {
+    setProgramData({
+      id: program.id,
+      title: program.title,
+      duration: program.duration,
+      price: getDiscountedPrice(),
+      originalPrice: program.originalPrice,
+    })
+  }
+
   return (
     <div className="container py-8 max-w-6xl">
       {/* Header */}
@@ -264,8 +278,8 @@ export default function EnrollmentPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Training Programs
         </Link>
-        <h1 className="text-3xl font-bold">Enroll in Database Management Systems</h1>
-        <p className="text-muted-foreground mt-2">Complete your enrollment to start your journey in Database Management Systems</p>
+        <h1 className="text-3xl font-bold">Enroll in {program?.title}</h1>
+        <p className="text-muted-foreground mt-2">Complete your enrollment to start your journey in {program?.title}</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -516,19 +530,21 @@ export default function EnrollmentPage() {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={!isFormValid || isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Submit Enrollment
-                      <CreditCard className="h-4 w-4 ml-2" />
-                    </>
-                  )}
-                </Button>
+                <Link href={`/training/payment/${program.id}`} className="w-full" onClick={handleProceed}>
+                  <Button type="submit" className="w-full" size="lg" disabled={!isFormValid || isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        Submit Enrollment
+                        <CreditCard className="h-4 w-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </Link>
               </form>
             </CardContent>
           </Card>
@@ -538,7 +554,7 @@ export default function EnrollmentPage() {
         <div className="lg:col-span-1">
           <Card className="sticky top-8">
             <CardHeader>
-              <CardTitle className="text-lg">Database Management Systems</CardTitle>
+              <CardTitle className="text-lg">{program?.title}</CardTitle>
               <CardDescription>{program.duration} • Comprehensive Training</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

@@ -192,7 +192,7 @@ export default function TrainingPage() {
                 </div>
               </CardContent>
 
-              <CardFooter>
+              <CardFooter>-
                 <Link href={`/training/enroll/${program.id}`} className="w-full">
                   <Button className="w-full">
                     Enroll Now

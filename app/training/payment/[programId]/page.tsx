@@ -1,32 +1,209 @@
 "use client"
-import { useParams, useSearchParams } from "next/navigation"
-import { ArrowLeft, CreditCard, Shield, CheckCircle } from "lucide-react"
+import React, {useEffect, useState} from "react"
+import { useParams, useSearchParams, useRouter } from "next/navigation"
+import { ArrowLeft, CreditCard, Shield, CheckCircle, Contact } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
+import Script from "next/script"
+import { toast } from "@/hooks/use-toast"
 
-export default function PaymentPage() {
-  const params = useParams()
-  const searchParams = useSearchParams()
-  const enrollmentId = searchParams.get("enrollmentId")
-
-  // Mock program data - in real app, fetch from database
-  const program = {
-    title: "Full Stack Web Development",
-    duration: "6 months",
-    price: 15999,
-    originalPrice: 24999,
+  declare global {
+    interface Window {
+      Razorpay: any
+    }
   }
 
+interface TrainingProgram {
+  id: string
+  title: string
+  duration: string
+  price: number
+  originalPrice: number
+}
+
+export default function PaymentPage() {
+
+  const [programLoading, setProgramLoading] = useState(true)
+  const [program, setProgram] = useState<TrainingProgram | null>(null)
+  const params = useParams()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const enrollmentId = searchParams.get("enrollmentId")
+  // const AMOUNT = 100;
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+      fetchProgram()
+    }, [params.programId])
+  
+    const fetchProgram = async () => {
+      try {
+        setProgramLoading(true)
+        const response = await fetch(`/api/training/programs/${params.programId}`)
+        const result = await response.json()
+  
+        if (result.success) {
+          console.log("Fetched program:", result.data);
+          setProgram(result.data)
+        } else {
+          toast({
+            title: "Error",
+            description: result.error || "Program not found",
+            variant: "destructive",
+          })
+          router.push("/training")
+        }
+      } catch (error) {
+        console.error("Error fetching program:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load program details",
+          variant: "destructive",
+        })
+        router.push("/training")
+      } finally {
+        setProgramLoading(false)
+      }
+    }
+
+  // // Mock program data - in real app, fetch from database
+  // const program = {
+  //   title: "Full Stack Web Development",
+  //   duration: "6 months",
+  //   price: 15999,
+  //   originalPrice: 24999,
+  // }
+
   const handlePayment = async () => {
+    if(!program) return;
     // Here you would integrate with Razorpay or other payment gateway
-    alert("Payment integration would be implemented here with Razorpay/Stripe")
+    // alert("Payment integration would be implemented here with Razorpay/Stripe")
+
+    setIsProcessing(true);
+
+    try {
+      const res = await fetch('/api/razorpay/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: program.price * 100 }) // amount in paise
+      });
+      const orderData = await res.json();
+      // if (!res.ok) throw new Error(orderData.error || 'Failed to create order');
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Razorpay Key ID
+        amount: program.price * 100, // in paise
+        currency: "INR",
+        name: "Shivam Tiwari",
+        // description: program.title,
+        order_id: orderData.orderId,
+        handler: async function (response: any) {
+          console.log("Payment successful", res);
+        },
+        prefill: {
+          name:"Shivam Tiwari",
+          email: "thor@gmail.com",
+          contact: "1234567890",
+        },
+        theme: {
+          color: "#2563eb"
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        alert('Payment failed: ' + response.error.description);
+      });
+      rzp.open();
+    }catch(err){
+      console.error("Payment failed", err);
+    } finally {
+      setIsProcessing(false);
+    }
+
+    // try {
+    //   // 1. Create order on the server
+    //   const orderRes = await fetch('/api/razorpay/create-order', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ amount: AMOUNT * 100 }) // amount in paise
+    //   });
+    //   const orderData = await orderRes.json();
+    //   if (!orderRes.ok) throw new Error(orderData.error || 'Failed to create order');
+
+    //   // 2. Initialize Razorpay payment
+    //   const options = {
+    //     key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Razorpay Key ID
+    //     amount: AMOUNT * 100, // in paise
+    //     currency: "INR",
+    //     name: "Enginow",
+    //     description: program.title,
+    //     order_id: orderData.orderId,
+    //     handler: async function (response: any) {
+    //       // 3. Verify payment on the server
+    //       const verifyRes = await fetch('/api/razorpay/verify', {
+    //         method: 'POST',
+    //         headers: { 'Content-Type': 'application/json' },
+    //         body: JSON.stringify({
+    //           razorpay_order_id: response.razorpay_order_id,
+    //           razorpay_payment_id: response.razorpay_payment_id,
+    //           razorpay_signature: response.razorpay_signature,
+    //           enrollmentData: { enrollmentId } // pass any additional data needed
+    //         })
+    //       });
+    //       const verifyData = await verifyRes.json();
+    //       if (verifyRes.ok && verifyData.success) {
+    //         alert('Payment successful! Enrollment ID: ' + verifyData.enrollment.id);
+    //         // Redirect or update UI as needed
+    //       } else {
+    //         throw new Error(verifyData.error || 'Payment verification failed');
+    //       }
+    //     },
+    //     prefill: {
+    //       name: "", // Add user's name if available
+    //       email: "", // Add user's email if available
+    //     },
+    //     theme: {
+    //       color: "#2563eb"
+    //     }
+    //   };
+
+    //   const rzp = new window.Razorpay(options);
+    //   rzp.on('payment.failed', function (response: any) {
+    //     alert('Payment failed: ' + response.error.description);
+    //   });
+    //   rzp.open();
+    // } catch (error: any) {
+    //   console.error("Payment error:", error);
+    //   alert("Error during payment: " + error.message);
+    // } finally {
+    //   setIsProcessing(false);
+    // }
+  }
+
+  if (!program) {
+    return (
+      <div className="container py-8 max-w-6xl">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Program not found</p>
+          <Link href="/training">
+            <Button>Back to Training Programs</Button>
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="container py-8 max-w-4xl">
+      <Script
+  src="https://checkout.razorpay.com/v1/checkout.js"
+  strategy="afterInteractive"
+/>
+
       {/* Header */}
       <div className="mb-8">
         <Link href="/training" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">
