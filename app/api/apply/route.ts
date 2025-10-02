@@ -26,17 +26,16 @@ export async function POST(req: Request) {
 
     // Create transporter (explicit SMTP settings tend to be more reliable)
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Gmail app password
+        // change .env.local file according to app key or mail id
+        user: process.env.GMAIL_USER || "your-email@gmail.com",
+        pass: process.env.GMAIL_APP_PASSWORD || "your-app-password",
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.GMAIL_USER,
       to: "chingarihub@gmail.com",
       subject: `New Job Application - ${name || "Unknown"}`,
       text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}`,
