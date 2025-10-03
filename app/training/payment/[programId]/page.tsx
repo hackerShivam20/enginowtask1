@@ -101,7 +101,7 @@ export default function PaymentPage() {
         // description: program.title,
         order_id: orderData.orderId,
         handler: async function (response: any) {
-          console.log("Payment successful", res);
+          alert(`Payment successful for ${program.title}`);
         },
         prefill: {
           name:"Shivam Tiwari",
