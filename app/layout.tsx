@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { PageTransition } from "@/components/ui/page-transition"
 import { EnrollmentProvider } from "@/context/EnrollmentContext"
+import { ClerkProvider } from '@clerk/nextjs'
 
 // Use only the Inter font from Google Fonts
 const inter = Inter({ subsets: ["latin"] })
@@ -24,6 +25,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body className={inter.className}>
         <ThemeProvider defaultTheme="light" enableSystem={false} disableTransitionOnChange>
@@ -40,5 +42,6 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
+    </ClerkProvider>
   )
 }

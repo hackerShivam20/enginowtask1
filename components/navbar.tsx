@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
+import { UserButton, SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'
 
 const routes = [
   { name: "Home", path: "/" },
@@ -176,12 +177,26 @@ export default function Navbar() {
           </Button>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button size="sm" className="gradient-button text-white rounded-full px-6 shadow-md">
+            {/* <Button size="sm" className="gradient-button text-white rounded-full px-6 shadow-md">
               <Link href="/contact" className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
+                
                 Get Started
               </Link>
-            </Button>
+            </Button> */}
+            <header className="flex justify-end items-center p-4 gap-4 h-16">
+              <SignedOut>
+                <SignInButton />
+                <SignUpButton>
+                  <button className="bg-[#6c47ff] text-ceramic-white rounded-full flex flex-row items-center gap-2 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                    <Sparkles className="h-4 w-4" />
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </header>
           </motion.div>
         </motion.div>
 
