@@ -77,14 +77,14 @@ export default function AdminDashboard() {
     const authStatus = localStorage.getItem("admin_authenticated")
     const sessionStatus = sessionStorage.getItem("admin_session")
 
-    if (authStatus === "true" && sessionStatus === "active") {
-      setIsAuthenticated(true)
-    } else {
-      // Redirect to login
-      window.location.href = "/admin/login"
--    }
+  if (authStatus === "true" && sessionStatus === "active") {
+    setIsAuthenticated(true)
     setIsLoading(false)
+  } else {
+    // Redirect to login
+    window.location.href = "/admin/login"
   }
+}
 
   const fetchData = async () => {
     try {
@@ -126,9 +126,9 @@ export default function AdminDashboard() {
       {
         id: "enroll_1704123456789_abc123",
         programId: "fullstack-web",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
+        firstName: "Shivam",
+        lastName: "Tiwari",
+        email: "Shivam.doe@example.com",
         phone: "+91 9876543210",
         whatsapp: "+91 9876543210",
         linkedin: "https://linkedin.com/in/johndoe",

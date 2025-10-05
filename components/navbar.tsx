@@ -24,6 +24,7 @@ const routes = [
     ],
   },
   { name: "Learn", path: "/learn" },
+  { name: "Training", path: "/training" },
   { name: "Blog", path: "/blog" },
   { name: "About", path: "/about" },
   { name: "Contact", path: "/contact" },

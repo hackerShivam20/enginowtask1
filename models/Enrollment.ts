@@ -7,8 +7,8 @@ export interface IEnrollment extends mongoose.Document {
   lastName: string
   email: string
   phone: string
-  whatsapp?: string
-  linkedin?: string
+  whatsapp: string
+  linkedin: string
   city: string
   state: string
   education: string

@@ -72,9 +72,11 @@
     @apply text-muted-foreground hover:text-primary;
   }
 
-  .section-padding {
-    @apply py-12 md:py-20;
-  }
+/* Make section paddings consistent & elegant */
+.section-padding {
+  @apply py-5 md:py-5 lg:py-5;
+  /* previously maybe 28 or 32 */
+}
 
   .feature-card {
     @apply relative overflow-hidden rounded-xl border bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1;
