@@ -107,12 +107,15 @@ export default function AdminDashboard() {
       }
 
       // If no real data, show sample data
-      if (
-        (!enrollmentsResult.success || !enrollmentsResult.data?.length) &&
-        (!programsResult.success || !programsResult.data?.length)
-      ) {
-        setSampleData()
-      }
+     if (
+       !enrollmentsResult.success ||
+       !programsResult.success ||
+       !enrollmentsResult.data?.length ||
+       !programsResult.data?.length
+     ) {
+       setSampleData();
+     }
+
     } catch (error) {
       console.error("Error fetching data:", error)
       setSampleData()
