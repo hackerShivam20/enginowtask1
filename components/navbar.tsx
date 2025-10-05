@@ -177,12 +177,6 @@ export default function Navbar() {
           </Button>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            {/* <Button size="sm" className="gradient-button text-white rounded-full px-6 shadow-md">
-              <Link href="/contact" className="flex items-center gap-2">
-                
-                Get Started
-              </Link>
-            </Button> */}
             <header className="flex justify-end items-center p-4 gap-4 h-16">
               <SignedOut>
                 <SignInButton />

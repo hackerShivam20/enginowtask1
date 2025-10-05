@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     } else {
       // Redirect to login
       window.location.href = "/admin/login"
-    }
+-    }
     setIsLoading(false)
   }
 
