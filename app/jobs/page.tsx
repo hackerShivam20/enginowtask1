@@ -105,63 +105,6 @@ export default function JobsPage() {
         </p>
       </div>
 
-      {/* Training & Internship Card */}
-      <div className="mb-12">
-        <Card className="relative overflow-hidden bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <GraduationCap className="h-6 w-6 text-purple-600" />
-              </div>
-              <div>
-                <CardTitle className="text-xl text-purple-900">Training & Internship Programs</CardTitle>
-                <CardDescription className="text-purple-700">
-                  Transform your career with industry-focused training programs
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <div className="grid md:grid-cols-3 gap-4 mb-6">
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4 text-purple-600" />
-                <span className="text-sm text-purple-800">6 Different Domains</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-purple-600" />
-                <span className="text-sm text-purple-800">Expert Mentorship</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <GraduationCap className="h-4 w-4 text-purple-600" />
-                <span className="text-sm text-purple-800">Industry Certification</span>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {[
-                "Full Stack Development",
-                "Data Science",
-                "AI & ML",
-                "DevOps",
-                "Mobile Development",
-                "Cybersecurity",
-              ].map((domain) => (
-                <Badge key={domain} variant="outline" className="bg-white/50 border-purple-300 text-purple-700">
-                  {domain}
-                </Badge>
-              ))}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Link href="/training" className="w-full">
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Explore Training Programs
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
-
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="flex-1">

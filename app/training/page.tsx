@@ -212,10 +212,17 @@ export default function TrainingPage() {
           Book a free consultation with our career counselors to find the perfect training program that aligns with your
           goals and experience level.
         </p>
+        <a
+    href="https://wa.me/918935069570?text=Hey%20*Enginow*%20!%20I%20need%20a%20help"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
         <Button size="lg" variant="outline">
           <Calendar className="h-4 w-4 mr-2" />
           Book Free Consultation
         </Button>
+
+      </a>
       </div>
     </div>
   )

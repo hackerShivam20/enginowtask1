@@ -194,7 +194,7 @@ export default function PaymentPage() {
                 {/* ✅ Dynamic Button */}
                 {paymentSuccess ? (
                   <>
-                    <Link href={`/training/${program.id}`}>
+                    <Link href={`/training/enroll/${program.id}`}>
                       <Button
                         size="lg"
                         className="w-full max-w-md bg-green-600 hover:bg-green-700"

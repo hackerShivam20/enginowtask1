@@ -98,7 +98,7 @@ export default function Navbar() {
       variants={navVariants}
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-500",
-        scrolled ? "nav-glassmorphism py-2" : "bg-transparent py-4",
+        scrolled ? "nav-glassmorphism py-2" : "bg-transparent py-4"
       )}
     >
       <div className="container flex items-center justify-between">
@@ -115,7 +115,9 @@ export default function Navbar() {
                 />
               </div>
               <div className="ml-3">
-                <span className="block text-xl font-bold text-black font-kolka">Enginow</span>
+                <span className="block text-xl font-bold text-black font-kolka">
+                  Enginow
+                </span>
                 <span className="text-xs" style={{ color: "#9A2FC4" }}>
                   Learn Fast, Understand Better
                 </span>
@@ -134,7 +136,9 @@ export default function Navbar() {
                     <button
                       className={cn(
                         "nav-pill group flex items-center gap-1",
-                        pathname.startsWith(route.path) ? "nav-pill-active" : "nav-pill-inactive",
+                        pathname.startsWith(route.path)
+                          ? "nav-pill-active"
+                          : "nav-pill-inactive"
                       )}
                     >
                       {route.name}
@@ -146,7 +150,11 @@ export default function Navbar() {
                     className="w-48 bg-white/90 backdrop-blur-md border border-white/20"
                   >
                     {route.submenu.map((item) => (
-                      <DropdownMenuItem key={item.path} asChild className="focus:bg-primary/10">
+                      <DropdownMenuItem
+                        key={item.path}
+                        asChild
+                        className="focus:bg-primary/10"
+                      >
                         <Link href={item.path}>{item.name}</Link>
                       </DropdownMenuItem>
                     ))}
@@ -157,16 +165,25 @@ export default function Navbar() {
               <motion.div key={route.path} custom={i} variants={itemVariants}>
                 <Link
                   href={route.path}
-                  className={cn("nav-pill", pathname === route.path ? "nav-pill-active" : "nav-pill-inactive")}
+                  className={cn(
+                    "nav-pill",
+                    pathname === route.path
+                      ? "nav-pill-active"
+                      : "nav-pill-inactive"
+                  )}
                 >
                   {route.name}
                 </Link>
               </motion.div>
-            ),
+            )
           )}
         </nav>
 
-        <motion.div variants={itemVariants} custom={routes.length} className="hidden md:flex items-center gap-3">
+        <motion.div
+          variants={itemVariants}
+          custom={routes.length}
+          className="hidden md:flex items-center gap-3"
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -178,20 +195,18 @@ export default function Navbar() {
           </Button>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <header className="flex justify-end items-center p-4 gap-4 h-16">
+            <Button
+              size="sm"
+              className="gradient-button text-white rounded-full px-6 shadow-md"
+            >
               <SignedOut>
-                <SignInButton />
-                <SignUpButton>
-                  <button className="bg-[#6c47ff] text-ceramic-white rounded-full flex flex-row items-center gap-2 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                    <Sparkles className="h-4 w-4" />
-                    Sign Up
-                  </button>
-                </SignUpButton>
+                <Sparkles className="h-4 w-4" />
+                <SignUpButton>Get Started</SignUpButton>
               </SignedOut>
               <SignedIn>
                 <UserButton />
               </SignedIn>
-            </header>
+            </Button>
           </motion.div>
         </motion.div>
 
@@ -201,7 +216,10 @@ export default function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className={cn("h-9 w-9 rounded-full", scrolled ? "hover:bg-primary/10" : "hover:bg-white/20")}
+              className={cn(
+                "h-9 w-9 rounded-full",
+                scrolled ? "hover:bg-primary/10" : "hover:bg-white/20"
+              )}
             >
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle menu</span>
@@ -212,7 +230,11 @@ export default function Navbar() {
             className="w-[80%] sm:w-[350px] pr-0 bg-white/90 backdrop-blur-md border-l border-white/20"
           >
             <div className="flex items-center justify-between mr-6">
-              <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
+              <Link
+                href="/"
+                className="flex items-center"
+                onClick={() => setOpen(false)}
+              >
                 <div className="bg-white rounded-full p-1.5 shadow-sm">
                   <Image
                     src="/Enginow Logo.png"
@@ -223,20 +245,14 @@ export default function Navbar() {
                   />
                 </div>
                 <div className="ml-2">
-                  <span className="text-lg font-bold text-black font-kolka">Enginow</span>
+                  <span className="text-lg font-bold text-black font-kolka">
+                    Enginow
+                  </span>
                   <span className="block text-xs" style={{ color: "#9A2FC4" }}>
                     Learn Fast, Understand Better
                   </span>
                 </div>
               </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setOpen(false)}
-                className="rounded-full hover:bg-primary/10"
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </div>
 
             <div className="flex items-center gap-2 mt-6 mr-6">
@@ -261,7 +277,9 @@ export default function Navbar() {
                     transition={{ delay: 0.1 + i * 0.05 }}
                     className="flex flex-col"
                   >
-                    <div className="font-medium text-base py-3 px-4 rounded-lg bg-primary/5">{route.name}</div>
+                    <div className="font-medium text-base py-3 px-4 rounded-lg bg-primary/5">
+                      {route.name}
+                    </div>
                     <div className="ml-4 flex flex-col gap-1 mt-1 mb-2">
                       {route.submenu.map((item, j) => (
                         <motion.div
@@ -295,13 +313,13 @@ export default function Navbar() {
                         "py-3 px-4 font-medium text-base rounded-lg transition-colors",
                         pathname === route.path
                           ? "bg-primary text-white"
-                          : "text-foreground hover:bg-primary/5 hover:text-primary",
+                          : "text-foreground hover:bg-primary/5 hover:text-primary"
                       )}
                     >
                       {route.name}
                     </Link>
                   </motion.div>
-                ),
+                )
               )}
 
               <motion.div
@@ -310,15 +328,17 @@ export default function Navbar() {
                 transition={{ delay: 0.1 + routes.length * 0.05 }}
                 className="mt-6"
               >
-                <Button className="w-full gradient-button text-white rounded-lg shadow-md" asChild>
-                  <Link
-                    href="/contact"
-                    onClick={() => setOpen(false)}
-                    className="flex items-center justify-center gap-2"
-                  >
+                <Button
+                  size="sm"
+                  className="gradient-button text-white rounded-full px-6 shadow-md"
+                >
+                  <SignedOut>
                     <Sparkles className="h-4 w-4" />
-                    Get Started
-                  </Link>
+                    <SignUpButton>Get Started</SignUpButton>
+                  </SignedOut>
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
                 </Button>
               </motion.div>
             </nav>
@@ -358,5 +378,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </motion.header>
-  )
+  );
 }

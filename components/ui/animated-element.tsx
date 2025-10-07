@@ -318,7 +318,7 @@ export function AnimatedCounter({
   }, [inView, from, to, duration, delay, isMounted])
 
   if (!isMounted) {
-    return <div className={className}>{formatter(from)}</div>
+    return <span className={className}>{formatter(from)}</span>
   }
 
   return (

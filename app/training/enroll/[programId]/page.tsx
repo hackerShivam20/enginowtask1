@@ -274,12 +274,17 @@ export default function EnrollmentPage() {
     <div className="container py-8 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
-        <Link href="/training" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">
+        <Link
+          href="/training"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Training Programs
         </Link>
         <h1 className="text-3xl font-bold">Enroll in {program?.title}</h1>
-        <p className="text-muted-foreground mt-2">Complete your enrollment to start your journey in {program?.title}</p>
+        <p className="text-muted-foreground mt-2">
+          Complete your enrollment to start your journey in {program?.title}
+        </p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
@@ -291,7 +296,9 @@ export default function EnrollmentPage() {
                 <User className="h-5 w-5" />
                 Personal Information
               </CardTitle>
-              <CardDescription>Please provide your details to complete the enrollment process</CardDescription>
+              <CardDescription>
+                Please provide your details to complete the enrollment process
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -302,7 +309,9 @@ export default function EnrollmentPage() {
                     <Input
                       id="firstName"
                       value={formData.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -311,7 +320,9 @@ export default function EnrollmentPage() {
                     <Input
                       id="lastName"
                       value={formData.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -325,7 +336,9 @@ export default function EnrollmentPage() {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -336,7 +349,9 @@ export default function EnrollmentPage() {
                         id="phone"
                         type="tel"
                         value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                         required
                       />
                     </div>
@@ -346,7 +361,9 @@ export default function EnrollmentPage() {
                         id="whatsapp"
                         type="tel"
                         value={formData.whatsapp}
-                        onChange={(e) => handleInputChange("whatsapp", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("whatsapp", e.target.value)
+                        }
                         placeholder="Same as phone if different"
                       />
                     </div>
@@ -356,7 +373,9 @@ export default function EnrollmentPage() {
                     <Input
                       id="linkedin"
                       value={formData.linkedin}
-                      onChange={(e) => handleInputChange("linkedin", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("linkedin", e.target.value)
+                      }
                       placeholder="https://linkedin.com/in/your-profile"
                     />
                   </div>
@@ -369,7 +388,9 @@ export default function EnrollmentPage() {
                     <Input
                       id="city"
                       value={formData.city}
-                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("city", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -378,7 +399,9 @@ export default function EnrollmentPage() {
                     <Input
                       id="state"
                       value={formData.state}
-                      onChange={(e) => handleInputChange("state", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("state", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -388,14 +411,21 @@ export default function EnrollmentPage() {
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="education">Highest Education *</Label>
-                    <Select onValueChange={(value) => handleInputChange("education", value)} required>
+                    <Select
+                      onValueChange={(value) =>
+                        handleInputChange("education", value)
+                      }
+                      required
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your education level" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="high-school">High School</SelectItem>
                         <SelectItem value="diploma">Diploma</SelectItem>
-                        <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
+                        <SelectItem value="bachelors">
+                          Bachelor's Degree
+                        </SelectItem>
                         <SelectItem value="masters">Master's Degree</SelectItem>
                         <SelectItem value="phd">PhD</SelectItem>
                       </SelectContent>
@@ -403,12 +433,19 @@ export default function EnrollmentPage() {
                   </div>
                   <div>
                     <Label htmlFor="experience">Work Experience *</Label>
-                    <Select onValueChange={(value) => handleInputChange("experience", value)} required>
+                    <Select
+                      onValueChange={(value) =>
+                        handleInputChange("experience", value)
+                      }
+                      required
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your experience level" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="fresher">Fresher (0 years)</SelectItem>
+                        <SelectItem value="fresher">
+                          Fresher (0 years)
+                        </SelectItem>
                         <SelectItem value="1-2">1-2 years</SelectItem>
                         <SelectItem value="3-5">3-5 years</SelectItem>
                         <SelectItem value="5+">5+ years</SelectItem>
@@ -416,11 +453,15 @@ export default function EnrollmentPage() {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="motivation">Why do you want to join this program?</Label>
+                    <Label htmlFor="motivation">
+                      Why do you want to join this program?
+                    </Label>
                     <Textarea
                       id="motivation"
                       value={formData.motivation}
-                      onChange={(e) => handleInputChange("motivation", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("motivation", e.target.value)
+                      }
                       placeholder="Tell us about your goals and motivation..."
                       rows={3}
                     />
@@ -431,30 +472,39 @@ export default function EnrollmentPage() {
                 <div className="space-y-4 border-t pt-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Gift className="h-5 w-5 text-primary" />
-                    <h3 className="text-lg font-medium">Referral Code (Optional)</h3>
+                    <h3 className="text-lg font-medium">
+                      Referral Code (Optional)
+                    </h3>
                   </div>
                   <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
                     <div className="flex items-center gap-2 mb-3">
                       <Gift className="h-5 w-5 text-purple-600" />
-                      <h4 className="font-medium text-purple-900">Have a Referral Code?</h4>
+                      <h4 className="font-medium text-purple-900">
+                        Have a Referral Code?
+                      </h4>
                     </div>
                     <p className="text-sm text-purple-700 mb-4">
-                      Have a referral code from a friend or partner? Enter it below to get an exclusive 10% discount on
-                      your enrollment!
+                      Have a referral code from a friend or partner? Enter it
+                      below to get an exclusive 10% discount on your enrollment!
                     </p>
                     <div className="relative">
                       <Input
                         id="referralCode"
                         value={formData.referralCode}
-                        onChange={(e) => handleInputChange("referralCode", e.target.value.toUpperCase())}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "referralCode",
+                            e.target.value.toUpperCase()
+                          )
+                        }
                         onBlur={handleReferralCodeBlur}
                         placeholder="Enter your referral code"
                         className={`pr-10 ${
                           referralCodeValid === true
                             ? "border-green-500 bg-green-50"
                             : referralCodeValid === false
-                              ? "border-red-500 bg-red-50"
-                              : ""
+                            ? "border-red-500 bg-red-50"
+                            : ""
                         }`}
                         disabled={checkingReferral}
                       />
@@ -481,7 +531,8 @@ export default function EnrollmentPage() {
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-green-600" />
                           <span className="text-sm font-medium text-green-800">
-                            🎉 Referral code applied! You save ₹{getDiscountAmount().toLocaleString()}
+                            🎉 Referral code applied! You save ₹
+                            {getDiscountAmount().toLocaleString()}
                           </span>
                         </div>
                       </div>
@@ -490,7 +541,8 @@ export default function EnrollmentPage() {
                       <div className="mt-3 p-3 bg-red-100 border border-red-300 rounded-lg">
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-red-700">
-                            ❌ Invalid or expired referral code. Please check and try again.
+                            ❌ Invalid or expired referral code. Please check
+                            and try again.
                           </span>
                         </div>
                       </div>
@@ -504,15 +556,23 @@ export default function EnrollmentPage() {
                     <Checkbox
                       id="terms"
                       checked={formData.agreeTerms}
-                      onCheckedChange={(checked) => handleInputChange("agreeTerms", checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("agreeTerms", checked as boolean)
+                      }
                     />
                     <Label htmlFor="terms" className="text-sm leading-relaxed">
                       I agree to the{" "}
-                      <Link href="/terms" className="text-primary hover:underline">
+                      <Link
+                        href="/terms"
+                        className="text-primary hover:underline"
+                      >
                         Terms and Conditions
                       </Link>{" "}
                       and{" "}
-                      <Link href="/privacy" className="text-primary hover:underline">
+                      <Link
+                        href="/privacy"
+                        className="text-primary hover:underline"
+                      >
                         Privacy Policy
                       </Link>
                       *
@@ -522,29 +582,46 @@ export default function EnrollmentPage() {
                     <Checkbox
                       id="marketing"
                       checked={formData.agreeMarketing}
-                      onCheckedChange={(checked) => handleInputChange("agreeMarketing", checked as boolean)}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("agreeMarketing", checked as boolean)
+                      }
                     />
-                    <Label htmlFor="marketing" className="text-sm leading-relaxed">
-                      I agree to receive marketing communications and course updates
+                    <Label
+                      htmlFor="marketing"
+                      className="text-sm leading-relaxed"
+                    >
+                      I agree to receive marketing communications and course
+                      updates
                     </Label>
                   </div>
                 </div>
 
-                <Link href={`/training/payment/${program.id}`} className="w-full" onClick={handleProceed}>
-                  <Button type="submit" className="w-full" size="lg" disabled={!isFormValid || isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        Submit Enrollment
-                        <CreditCard className="h-4 w-4 ml-2" />
-                      </>
-                    )}
-                  </Button>
-                </Link>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={!isFormValid || isLoading}
+                  onClick={(e) => {
+                    if (!isFormValid) {
+                      e.preventDefault();
+                    } else {
+                      handleProceed();
+                      router.push(`/training/payment/${program.id}`);
+                    }
+                  }}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Submit Enrollment
+                      <CreditCard className="h-4 w-4 ml-2" />
+                    </>
+                  )}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -555,7 +632,9 @@ export default function EnrollmentPage() {
           <Card className="sticky top-8">
             <CardHeader>
               <CardTitle className="text-lg">{program?.title}</CardTitle>
-              <CardDescription>{program.duration} • Comprehensive Training</CardDescription>
+              <CardDescription>
+                {program.duration} • Comprehensive Training
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Pricing */}
@@ -564,12 +643,16 @@ export default function EnrollmentPage() {
                   <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Gift className="h-4 w-4 text-green-600" />
-                      <span className="text-sm font-medium text-green-800">Referral Discount Applied!</span>
+                      <span className="text-sm font-medium text-green-800">
+                        Referral Discount Applied!
+                      </span>
                     </div>
                     <div className="text-sm text-green-700">
                       <div className="flex justify-between">
                         <span>Original Price:</span>
-                        <span className="line-through">₹{program.price.toLocaleString()}</span>
+                        <span className="line-through">
+                          ₹{program.price.toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex justify-between font-medium">
                         <span>Discount:</span>
@@ -579,11 +662,21 @@ export default function EnrollmentPage() {
                   </div>
                 )}
                 <div className="flex items-center justify-between mb-2">
-                  <span className={`text-2xl font-bold ${referralCodeValid ? "text-green-600" : ""}`}>
+                  <span
+                    className={`text-2xl font-bold ${
+                      referralCodeValid ? "text-green-600" : ""
+                    }`}
+                  >
                     ₹{getDiscountedPrice().toLocaleString()}
                   </span>
                   <Badge variant="secondary">
-                    Save {Math.round(((program.originalPrice - getDiscountedPrice()) / program.originalPrice) * 100)}%
+                    Save{" "}
+                    {Math.round(
+                      ((program.originalPrice - getDiscountedPrice()) /
+                        program.originalPrice) *
+                        100
+                    )}
+                    %
                   </Badge>
                 </div>
                 {!referralCodeValid && (
@@ -628,7 +721,9 @@ export default function EnrollmentPage() {
                   <Gift className="h-4 w-4" />
                   Referral Benefits
                 </h4>
-                <p className="text-sm text-purple-700 mb-2">Have a referral code? Get instant benefits!</p>
+                <p className="text-sm text-purple-700 mb-2">
+                  Have a referral code? Get instant benefits!
+                </p>
                 <ul className="text-xs text-purple-600 space-y-1">
                   <li>• 10% instant discount on course fee</li>
                   <li>• Priority support during enrollment</li>
@@ -641,16 +736,23 @@ export default function EnrollmentPage() {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <h4 className="font-medium text-blue-900 mb-2">Need Help?</h4>
                 <p className="text-sm text-blue-700 mb-3">
-                  Have questions about the program? Our counselors are here to help.
+                  Have questions about the program? Our counselors are here to
+                  help.
                 </p>
-                <Button variant="outline" size="sm" className="w-full">
-                  Chat with Counselor
-                </Button>
+                <a
+                  href="https://wa.me/918935069570?text=Hey%20*Enginow*%20!%20I%20need%20a%20help"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    Chat with Counselor
+                  </Button>
+                </a>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
     </div>
-  )
+  );
 }
