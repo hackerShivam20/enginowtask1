@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     setIsLoading(false)
   } else {
     // Redirect to login
-    window.location.href = "/admin/login"
+    window.location.href = "/64rvsth255d/admin/login";
   }
 }
 

@@ -42,7 +42,7 @@ export default function AdminLogin() {
         document.cookie = "admin_authenticated=true; path=/; max-age=86400; SameSite=Lax"
 
         // Force redirect to admin dashboard
-        window.location.href = "/admin"
+        window.location.href = "/64rvsth255d/admin";
       } else {
         setError("Invalid username or password. Please contact the administrator if you need access.")
       }
