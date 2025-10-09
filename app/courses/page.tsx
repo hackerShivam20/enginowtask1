@@ -13,11 +13,23 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, BookOpen } from "lucide-react";
+import { Search, Filter, BookOpen, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AnimatedElement } from "@/components/ui/animated-element";
 import { motion } from "framer-motion";
 import Link from "next/link";
+
+interface CourseProgram {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  isNew: boolean;
+  isFree: boolean;
+  price: number;
+  category: string;
+  color: string;
+}
 
 export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState("all");
@@ -332,6 +344,7 @@ export default function CoursesPage() {
                       className="bg-gradient-to-r from-primary to-purple-dark hover:opacity-90"
                     >
                       Enroll Now
+                      <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
                 )}
