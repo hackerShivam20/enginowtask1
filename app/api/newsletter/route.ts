@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.GMAIL_USER || "your-email@gmail.com",
-        pass: process.env.GMAIL_APP_PASSWORD || "your-app-password",
+        user: process.env.GMAIL_USER || "st19932000@gmail.com",
+        pass: process.env.GMAIL_APP_PASSWORD || "gxsrqsrbkjigkpzb",
       },
     })
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     // send the mail to care@enginow.in
     await transporter.sendMail({
       from: `"Enginow Newsletter" <${process.env.GMAIL_USER}>`,
-      to: "chingarihub@gmail.com",
+      to:"chingarihub@gmail.com",
       subject: "🎉 New Newsletter Subscriber",
       text: `New subscriber email: ${email}`,
       html: htmlContent,

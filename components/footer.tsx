@@ -44,7 +44,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-gradient-mesh border-t border-white/20">
-      <div className="container mx-auto px-4">
+      <div className="container  px-1">
         {/* Newsletter Section */}
         <AnimatedElement
           animation="fade-up"
@@ -98,14 +98,14 @@ export default function Footer() {
         </AnimatedElement>
 
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-6 lg:grid-cols-12">
           {/* Brand */}
           <AnimatedElement
             animation="fade-right"
             delay={0.1}
             className="md:col-span-2 lg:col-span-4"
           >
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-6">
               <div className="bg-white rounded-full p-1.5 shadow-sm">
                 <BookOpen className="h-6 w-6 text-primary" />
               </div>
@@ -118,8 +118,8 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Comprehensive learning resources for engineering students and
+            <p className="text-xs text-muted-foreground mb-6">
+              Comprehensive learning resources for engineering students <br/> and
               learners of Computer Science/IT subjects.
             </p>
 
@@ -147,12 +147,12 @@ export default function Footer() {
           <AnimatedElement
             animation="fade-up"
             delay={0.2}
-            className="md:col-span-1 lg:col-span-2"
+            className="md:col-span-1 lg:col-span-2 pt-12"
           >
-            <h3 className="mb-3 text-sm font-bold gradient-text-primary">
+            <h3 className="mb-5 text-xl font-bold gradient-text-primary">
               Quick Links
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-sm">
               {[
                 { name: "Courses", href: "/courses" },
                 { name: "Learn", href: "/learn" },
@@ -181,12 +181,12 @@ export default function Footer() {
           <AnimatedElement
             animation="fade-up"
             delay={0.3}
-            className="md:col-span-1 lg:col-span-2"
+            className="md:col-span-1 lg:col-span-2 pt-12"
           >
-            <h3 className="mb-3 text-sm font-bold gradient-text-secondary">
+            <h3 className="mb-5 text-xl font-bold gradient-text-secondary">
               Company
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-sm">
               {[
                 { name: "About Us", href: "/about" },
                 { name: "Contact", href: "/contact" },
@@ -217,7 +217,7 @@ export default function Footer() {
             delay={0.4}
             className="md:col-span-2 lg:col-span-4"
           >
-            <h3 className="mb-3 text-sm font-bold gradient-text-accent">
+            <h3 className="mb-3 text-xl font-bold gradient-text-accent">
               Resources
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -279,8 +279,8 @@ export default function Footer() {
     md:grid md:grid-cols-3
     flex flex-col md:flex-row
     items-center
-    gap-4 py-6
-    px-6 md:px-12
+    gap-2 py-6
+    px-1 md:px-4
   "
         >
           {/* Left: social icons */}
@@ -338,6 +338,8 @@ export default function Footer() {
               { name: "Terms of Service", href: "/terms" },
               { name: "Cookie Policy", href: "/cookies" },
               { name: "Refund Policy", href: "/refund" },
+              { name: "Shipping Policy", href: "/shipping" },
+              { name: "Pricing Policy", href: "/pricing" },
             ].map((link, i) => (
               <motion.div
                 key={i}
