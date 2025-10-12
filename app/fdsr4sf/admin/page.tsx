@@ -82,7 +82,7 @@ export default function AdminDashboard() {
     setIsLoading(false)
   } else {
     // Redirect to login
-    window.location.href = "/64rvsth255d/admin/login";
+    window.location.href = "/fdsr4sf/admin/login";
   }
 }
 
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
     localStorage.removeItem("admin_login_time")
     sessionStorage.removeItem("admin_session")
     document.cookie = "admin_authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-    window.location.href = "/64rvsth255d/admin/login"
+    window.location.href = "/fdsr4sf/admin/login";
   }
 
   const filteredEnrollments = enrollments.filter((enrollment) => {

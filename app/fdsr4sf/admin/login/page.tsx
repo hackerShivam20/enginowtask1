@@ -21,7 +21,7 @@ export default function AdminLogin() {
 
   // Admin credentials (hidden from UI)
   const ADMIN_USERNAME = "admin"
-  const ADMIN_PASSWORD = "8960685577"
+  const ADMIN_PASSWORD = "7919"
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,7 +42,7 @@ export default function AdminLogin() {
         document.cookie = "admin_authenticated=true; path=/; max-age=86400; SameSite=Lax"
 
         // Force redirect to admin dashboard
-        window.location.href = "/64rvsth255d/admin";
+        window.location.href = "/fdsr4sf/admin";
       } else {
         setError("Invalid username or password. Please contact the administrator if you need access.")
       }
