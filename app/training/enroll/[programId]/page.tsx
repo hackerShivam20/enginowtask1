@@ -173,9 +173,36 @@ export default function EnrollmentPage() {
     try {
       setLoading(true);
 
+      // 🔹 1️⃣ Send enrollment email BEFORE payment
+      const enrollRes = await fetch("/api/training/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          programId: programId,
+        }),
+      });
+
+      const enrollData = await enrollRes.json();
+
+      if (!enrollRes.ok || !enrollData.success) {
+        console.error("Email failed:", enrollData.error);
+        toast({
+          title: "Warning: Email not sent",
+          description:
+            "Your enrollment email could not be delivered, but you can continue payment.",
+          variant: "destructive",
+        });
+      } else {
+        console.log("✅ Enrollment email sent successfully!");
+      }
+
       // 1️⃣ Create Razorpay order
 
-      const finalPrice = referralCodeValid ? Math.round(program!.price * 0.9) : program?.price;
+      const finalPrice = referralCodeValid
+        ? Math.round(program!.price * 0.9)
+        : program?.price;
+        
       const orderRes = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -185,7 +212,7 @@ export default function EnrollmentPage() {
         }),
       });
 
-      const { order } = await orderRes.json();
+      const order = await orderRes.json();
 
       // 2️⃣ Open Razorpay checkout
       const options = {

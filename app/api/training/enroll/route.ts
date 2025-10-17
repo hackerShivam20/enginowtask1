@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       service: "gmail",
       auth: {
         user: process.env.GMAIL_USER || "your-email@gmail.com",
-        pass: process.env.GMAIL_APP_PASSWORD || "your-app-password",
+        pass: process.env.GMAIL_PASS || "your-app-password",
       },
     });
 

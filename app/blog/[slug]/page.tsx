@@ -10,10 +10,11 @@ import { AnimatedElement } from "@/components/ui/animated-element"
 import { BlogContent } from "@/components/blog-content"
 import { useEffect, useState } from "react"
 
-const blogPosts = [ 
+const blogPosts = [
   {
     title: "Understanding Time Complexity in Algorithms",
-    excerpt: "A comprehensive guide to analyzing algorithm efficiency using Big O notation and practical examples.",
+    excerpt:
+      "A comprehensive guide to analyzing algorithm efficiency using Big O notation and practical examples.",
     content: `
       <p>Time complexity is a fundamental concept in computer science that helps us analyze and compare the efficiency of algorithms. It provides a way to express how the runtime of an algorithm grows as the size of the input increases.</p>
 
@@ -98,13 +99,15 @@ const blogPosts = [
     relatedPosts: [
       {
         title: "Mastering Recursion in Programming",
-        excerpt: "A step-by-step guide to understanding and implementing recursive algorithms effectively.",
-        image: "/placeholder.svg?height=200&width=350&text=Recursion",
+        excerpt:
+          "A step-by-step guide to understanding and implementing recursive algorithms effectively.",
+        image: "https://miro.medium.com/v2/1*AX103NrmJFS5s4lsNRJTYg.jpeg",
         slug: "mastering-recursion",
       },
       {
         title: "Introduction to Dynamic Programming",
-        excerpt: "Learn how to solve complex problems by breaking them down into simpler subproblems.",
+        excerpt:
+          "Learn how to solve complex problems by breaking them down into simpler subproblems.",
         image: "/placeholder.svg?height=200&width=350&text=Dynamic+Programming",
         slug: "dynamic-programming",
       },
@@ -181,13 +184,15 @@ const blogPosts = [
     relatedPosts: [
       {
         title: "Process Management in Operating Systems",
-        excerpt: "Learn about process states, scheduling algorithms, and synchronization mechanisms.",
+        excerpt:
+          "Learn about process states, scheduling algorithms, and synchronization mechanisms.",
         image: "/placeholder.svg?height=200&width=350&text=Process+Management",
         slug: "process-management",
       },
       {
         title: "File Systems in Modern OS",
-        excerpt: "An overview of file system architectures and implementations.",
+        excerpt:
+          "An overview of file system architectures and implementations.",
         image: "/placeholder.svg?height=200&width=350&text=File+Systems",
         slug: "file-systems",
       },
@@ -290,13 +295,15 @@ const blogPosts = [
     relatedPosts: [
       {
         title: "SQL Query Optimization Techniques",
-        excerpt: "Learn how to write efficient SQL queries that perform well even with large datasets.",
+        excerpt:
+          "Learn how to write efficient SQL queries that perform well even with large datasets.",
         image: "/placeholder.svg?height=200&width=350&text=SQL+Optimization",
         slug: "sql-optimization",
       },
       {
         title: "NoSQL vs SQL Databases",
-        excerpt: "Understanding the key differences and when to use each database type.",
+        excerpt:
+          "Understanding the key differences and when to use each database type.",
         image: "/placeholder.svg?height=200&width=350&text=NoSQL+vs+SQL",
         slug: "nosql-vs-sql",
       },
@@ -305,7 +312,8 @@ const blogPosts = [
   },
   {
     title: "Mastering Recursion in Programming",
-    excerpt: "A step-by-step guide to understanding and implementing recursive algorithms effectively in your code.",
+    excerpt:
+      "A step-by-step guide to understanding and implementing recursive algorithms effectively in your code.",
     content: `
       <p>Recursion is a powerful programming technique where a function calls itself to solve a problem. It's particularly useful for tasks that can be broken down into smaller, similar subproblems.</p>
       
@@ -409,13 +417,15 @@ const blogPosts = [
     relatedPosts: [
       {
         title: "Understanding Time Complexity in Algorithms",
-        excerpt: "A comprehensive guide to analyzing the efficiency of algorithms using Big O notation.",
+        excerpt:
+          "A comprehensive guide to analyzing the efficiency of algorithms using Big O notation.",
         image: "/placeholder.svg?height=200&width=350&text=Algorithms",
         slug: "understanding-time-complexity",
       },
       {
         title: "Dynamic Programming Fundamentals",
-        excerpt: "Master the art of solving complex problems by breaking them down into overlapping subproblems.",
+        excerpt:
+          "Master the art of solving complex problems by breaking them down into overlapping subproblems.",
         image: "/placeholder.svg?height=200&width=350&text=Dynamic+Programming",
         slug: "dynamic-programming-fundamentals",
       },
@@ -549,14 +559,15 @@ const blogPosts = [
       },
       {
         title: "Network Security Fundamentals",
-        excerpt: "Essential concepts and practices for securing computer networks.",
+        excerpt:
+          "Essential concepts and practices for securing computer networks.",
         image: "/placeholder.svg?height=200&width=350&text=Network+Security",
         slug: "network-security-fundamentals",
       },
     ],
     slug: "osi-model",
   },
- ]
+];
 
 export default function BlogPostPage() {
   const params = useParams()

@@ -112,6 +112,19 @@ export default function CourseEnrollPage() {
     try {
       setLoading(true);
 
+      // 1️⃣ Send email first (non-blocking, don’t wait for Razorpay)
+      fetch("/api/courses/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+        .then(() => {
+          console.log("Email sent");
+        })
+        .catch((err) => {
+          console.error("Email failed", err);
+        });
+
       // 1️⃣ Create Razorpay order
       const orderRes = await fetch("/api/razorpay/order", {
         method: "POST",

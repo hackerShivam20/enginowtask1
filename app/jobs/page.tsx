@@ -99,10 +99,82 @@ export default function JobsPage() {
     <div className="container py-12">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">Career Opportunities</h1>
+        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl mb-4">
+          Career Opportunities
+        </h1>
         <p className="max-w-3xl mx-auto text-muted-foreground md:text-xl">
-          Find your dream job or enhance your skills with our training programs. Start your journey to success today.
+          Find your dream job or enhance your skills with our training programs.
+          Start your journey to success today.
         </p>
+      </div>
+
+      {/* Training & Internship Card */}
+      <div className="mb-12">
+        <Card className="relative overflow-hidden bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <GraduationCap className="h-6 w-6 text-purple-600" />
+              </div>
+              <div>
+                <CardTitle className="text-xl text-purple-900">
+                  Training & Internship Programs
+                </CardTitle>
+                <CardDescription className="text-purple-700">
+                  Transform your career with industry-focused training programs
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pb-4">
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-purple-600" />
+                <span className="text-sm text-purple-800">
+                  6 Different Domains
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-purple-600" />
+                <span className="text-sm text-purple-800">
+                  Expert Mentorship
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-purple-600" />
+                <span className="text-sm text-purple-800">
+                  Industry Certification
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {[
+                "Full Stack Development",
+                "Data Science",
+                "AI & ML",
+                "DevOps",
+                "Mobile Development",
+                "Cybersecurity",
+              ].map((domain) => (
+                <Badge
+                  key={domain}
+                  variant="outline"
+                  className="bg-white/50 border-purple-300 text-purple-700"
+                >
+                  {domain}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Link href="/training" className="w-full">
+              <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                Explore Training Programs
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+          </CardFooter>
+        </Card>
       </div>
 
       {/* Search and Filters */}
@@ -145,7 +217,8 @@ export default function JobsPage() {
       {/* Job Results */}
       <div className="mb-6">
         <p className="text-muted-foreground">
-          Showing {filteredJobs.length} job{filteredJobs.length !== 1 ? "s" : ""}
+          Showing {filteredJobs.length} job
+          {filteredJobs.length !== 1 ? "s" : ""}
           {searchQuery && ` for "${searchQuery}"`}
         </p>
       </div>
@@ -158,9 +231,15 @@ export default function JobsPage() {
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-xl mb-1">{job.title}</CardTitle>
-                  <CardDescription className="text-base font-medium text-foreground">{job.company}</CardDescription>
+                  <CardDescription className="text-base font-medium text-foreground">
+                    {job.company}
+                  </CardDescription>
                 </div>
-                <Badge variant={job.type === "Internship" ? "secondary" : "default"}>{job.type}</Badge>
+                <Badge
+                  variant={job.type === "Internship" ? "secondary" : "default"}
+                >
+                  {job.type}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -193,7 +272,9 @@ export default function JobsPage() {
                 ))}
               </div>
 
-              <p className="text-xs text-muted-foreground">Posted {job.posted}</p>
+              <p className="text-xs text-muted-foreground">
+                Posted {job.posted}
+              </p>
             </CardContent>
             <CardFooter>
               <Button asChild className="w-full">
@@ -206,13 +287,15 @@ export default function JobsPage() {
 
       {filteredJobs.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground mb-4">No jobs found matching your criteria.</p>
+          <p className="text-muted-foreground mb-4">
+            No jobs found matching your criteria.
+          </p>
           <Button
             variant="outline"
             onClick={() => {
-              setSearchQuery("")
-              setLocationFilter("all")
-              setTypeFilter("all")
+              setSearchQuery("");
+              setLocationFilter("all");
+              setTypeFilter("all");
             }}
           >
             Clear Filters
@@ -220,5 +303,5 @@ export default function JobsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

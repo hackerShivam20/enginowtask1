@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "react-hot-toast";
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 const jobs = [
   {
@@ -58,11 +60,70 @@ const jobs = [
       "Communicate findings to team",
     ],
   },
+  {
+    id: "3",
+    title: "Frontend Developer Intern",
+    company: "StartupXYZ",
+    location: "Remote",
+    type: "Internship",
+    salary: "₹15,000/month",
+    experience: "0-1 years",
+    skills: ["React", "JavaScript", "CSS", "Git"],
+    description:
+      "Great opportunity for fresh graduates to work on exciting projects.",
+    roles: ["Implement UI features", "Fix bugs", "Write tests"],
+    responsibilities: [
+      "Work with senior devs to build features",
+      "Participate in code reviews",
+      "Maintain component library",
+    ],
+  },
+  {
+    id: "4",
+    title: "DevOps Engineer",
+    company: "CloudTech Inc",
+    location: "Hyderabad, India",
+    type: "Full-time",
+    salary: "₹10-16 LPA",
+    experience: "2-4 years",
+    skills: ["Docker", "Kubernetes", "AWS", "Jenkins"],
+    description:
+      "Manage and optimize our cloud infrastructure and deployment pipelines.",
+    roles: ["Build CI/CD pipelines", "Monitor infra", "Automate deployments"],
+    responsibilities: [
+      "Improve deployment reliability",
+      "Write infrastructure-as-code",
+      "On-call for infra issues",
+    ],
+  },
+  {
+    id: "5",
+    title: "Mobile App Developer",
+    company: "AppMakers Ltd",
+    location: "Pune, India",
+    type: "Full-time",
+    salary: "₹8-14 LPA",
+    experience: "1-3 years",
+    skills: ["React Native", "Flutter", "iOS", "Android"],
+    description:
+      "Develop cross-platform mobile applications for our growing user base.",
+    roles: [
+      "Develop mobile features",
+      "Optimize performance",
+      "Publish builds",
+    ],
+    responsibilities: [
+      "Ship high-quality mobile code",
+      "Work on UI/UX improvements",
+      "Integrate with backend APIs",
+    ],
+  },
 ];
 
 export default function JobApplicationPage() {
   const params = useParams();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const job = jobs.find((j) => j.id === params.id);
 
   const [formData, setFormData] = useState({
@@ -81,16 +142,17 @@ export default function JobApplicationPage() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
+    if (files && files.length) {
       setFormData((prev) => ({ ...prev, [name]: files[0] }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // client-side required fields check
     const requiredFields = [
       "name",
       "email",
@@ -101,14 +163,74 @@ export default function JobApplicationPage() {
     ];
     for (const field of requiredFields) {
       if (!formData[field]) {
-        alert("Please fill all required fields and upload your resume.");
+        toast.error("Please fill all required fields and upload your resume.", {
+          icon: "❌",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        setLoading(false);   //Shivam Tiwari
         return;
       }
     }
 
-    console.log("Application submitted:", formData);
-    alert("✅ Application submitted successfully!");
-    router.push("/jobs");
+    try {
+      const fd = new FormData();
+      fd.append("name", formData.name);
+      fd.append("email", formData.email);
+      fd.append("phone", formData.phone);
+      fd.append("education", formData.education);
+      fd.append("experience", formData.experience);
+      fd.append("linkedin", formData.linkedin || "");
+      fd.append("portfolio", formData.portfolio || "");
+      fd.append("coverLetter", formData.coverLetter || "");
+      fd.append("jobId", job.id);
+      fd.append("jobTitle", job.title);
+      if (formData.resume) fd.append("resume", formData.resume);
+
+      const res = await fetch("/api/apply", {
+        method: "POST",
+        body: fd,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success("✅ Application submitted successfully!", {
+          icon: "✅",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+        router.push("/jobs");
+      } else {
+        console.error("Apply error:", data);
+        toast.error("❌ Failed to send application. Please try again later.", {
+          icon: "❌",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Submit error:", err);
+      toast.error("❌ An unexpected error occurred. Check console for details.", {
+        icon: "❌",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -230,9 +352,21 @@ export default function JobApplicationPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full mt-4 bg-blue-600 hover:bg-blue-700 transition"
+              // disabled={loading}
+              className="w-full mt-4 bg-blue-600 hover:bg-blue-700 transition flex items-center justify-center gap-2"
             >
-              Submit Application
+              {loading ? (
+                <>
+                  <Loader2
+                    className="h-4 w-4 animate-spin"
+                    /* Fallback inline style if Tailwind animate-spin isn't available */
+                    style={{ animation: "spin 1s linear infinite" }}
+                  />
+                  Submitting...
+                </>
+              ) : (
+                "Submit Application"
+              )}
             </Button>
           </form>
         </CardContent>
@@ -284,3 +418,290 @@ export default function JobApplicationPage() {
     </div>
   );
 }
+
+// "use client";
+
+// import { useState } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import { Badge } from "@/components/ui/badge";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+
+// const jobs = [
+//   {
+//     id: "1",
+//     title: "Senior Full Stack Developer",
+//     company: "TechCorp Solutions",
+//     location: "Bangalore, India",
+//     type: "Full-time",
+//     salary: "₹12-18 LPA",
+//     experience: "3-5 years",
+//     skills: ["React", "Node.js", "MongoDB", "AWS"],
+//     description:
+//       "Join our dynamic team to build scalable web applications using modern technologies.",
+//     roles: [
+//       "Develop backend APIs",
+//       "Design frontend UI components",
+//       "Deploy cloud infrastructure",
+//     ],
+//     responsibilities: [
+//       "Write clean and maintainable code",
+//       "Collaborate with cross-functional teams",
+//       "Ensure code quality through reviews and testing",
+//     ],
+//   },
+//   {
+//     id: "2",
+//     title: "Data Scientist",
+//     company: "Analytics Pro",
+//     location: "Mumbai, India",
+//     type: "Full-time",
+//     salary: "₹15-22 LPA",
+//     experience: "2-4 years",
+//     skills: ["Python", "Machine Learning", "SQL", "Tableau"],
+//     description:
+//       "Analyze complex datasets and build predictive models to drive business insights.",
+//     roles: [
+//       "Build predictive models",
+//       "Analyze large datasets",
+//       "Collaborate with stakeholders",
+//     ],
+//     responsibilities: [
+//       "Perform data cleaning and preprocessing",
+//       "Visualize data insights",
+//       "Communicate findings to team",
+//     ],
+//   },
+// ];
+
+// export default function JobApplicationPage() {
+//   const params = useParams();
+//   const router = useRouter();
+//   const job = jobs.find((j) => j.id === params.id);
+
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     email: "",
+//     phone: "",
+//     education: "",
+//     experience: "",
+//     linkedin: "",
+//     portfolio: "",
+//     coverLetter: "",
+//     resume: null,
+//   });
+
+//   if (!job) return <p className="text-center py-12">Job not found.</p>;
+
+//   const handleChange = (e) => {
+//     const { name, value, files } = e.target;
+//     if (files) {
+//       setFormData((prev) => ({ ...prev, [name]: files[0] }));
+//     } else {
+//       setFormData((prev) => ({ ...prev, [name]: value }));
+//     }
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+
+//     const requiredFields = [
+//       "name",
+//       "email",
+//       "phone",
+//       "education",
+//       "experience",
+//       "resume",
+//     ];
+//     for (const field of requiredFields) {
+//       if (!formData[field]) {
+//         alert("Please fill all required fields and upload your resume.");
+//         return;
+//       }
+//     }
+
+//     console.log("Application submitted:", formData);
+//     alert("✅ Application submitted successfully!");
+//     router.push("/jobs");
+//   };
+
+//   return (
+//     <div className="container py-12 grid md:grid-cols-2 gap-8">
+//       {/* Left: Application Form */}
+//       <Card className="p-6">
+//         <CardHeader>
+//           <CardTitle>Apply for {job.title}</CardTitle>
+//           <CardDescription>
+//             Fill out the form below to submit your application
+//           </CardDescription>
+//         </CardHeader>
+
+//         <CardContent>
+//           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+//             {/* Name */}
+//             <Input
+//               name="name"
+//               placeholder="Full Name *"
+//               value={formData.name}
+//               onChange={handleChange}
+//               required
+//             />
+
+//             {/* Email */}
+//             <Input
+//               name="email"
+//               type="email"
+//               placeholder="Email *"
+//               value={formData.email}
+//               onChange={handleChange}
+//               required
+//             />
+
+//             {/* Phone */}
+//             <Input
+//               name="phone"
+//               type="tel"
+//               placeholder="Phone Number *"
+//               value={formData.phone}
+//               onChange={handleChange}
+//               required
+//             />
+
+//             {/* Education */}
+//             <Input
+//               name="education"
+//               placeholder="Highest Education Qualification * (e.g., B.Tech in CSE)"
+//               value={formData.education}
+//               onChange={handleChange}
+//               required
+//             />
+
+//             {/* Experience */}
+//             <div>
+//               <label className="block mb-1 font-medium">Experience *</label>
+//               <select
+//                 name="experience"
+//                 value={formData.experience}
+//                 onChange={handleChange}
+//                 required
+//                 className="w-full border border-gray-300 rounded px-3 py-2"
+//               >
+//                 <option value="">Select Experience</option>
+//                 <option value="0-1">0-1 Years (Fresher)</option>
+//                 <option value="1-2">1-2 Years</option>
+//                 <option value="2-3">2-3 Years</option>
+//                 <option value="3-5">3-5 Years</option>
+//                 <option value="5+">5+ Years</option>
+//               </select>
+//             </div>
+
+//             {/* LinkedIn Profile */}
+//             <Input
+//               name="linkedin"
+//               type="url"
+//               placeholder="LinkedIn Profile (optional)"
+//               value={formData.linkedin}
+//               onChange={handleChange}
+//             />
+
+//             {/* Portfolio */}
+//             <Input
+//               name="portfolio"
+//               type="url"
+//               placeholder="Portfolio / GitHub Link (optional)"
+//               value={formData.portfolio}
+//               onChange={handleChange}
+//             />
+
+//             {/* Cover Letter */}
+//             <div>
+//               <label className="block mb-1 font-medium">
+//                 Cover Letter (optional)
+//               </label>
+//               <textarea
+//                 name="coverLetter"
+//                 placeholder="Write a brief cover letter..."
+//                 value={formData.coverLetter}
+//                 onChange={handleChange}
+//                 rows={4}
+//                 className="w-full border border-gray-300 rounded px-3 py-2"
+//               />
+//             </div>
+
+//             {/* Resume Upload */}
+//             <div>
+//               <label className="block mb-1 font-medium">Resume *</label>
+//               <input
+//                 type="file"
+//                 name="resume"
+//                 accept=".pdf,.doc,.docx"
+//                 onChange={handleChange}
+//                 required
+//                 className="w-full border border-gray-300 rounded px-3 py-2"
+//               />
+//             </div>
+
+//             {/* Submit Button */}
+//             <Button
+//               type="submit"
+//               className="w-full mt-4 bg-blue-600 hover:bg-blue-700 transition"
+//             >
+//               Submit Application
+//             </Button>
+//           </form>
+//         </CardContent>
+//       </Card>
+
+//       {/* Right: Job Details */}
+//       <div className="space-y-6">
+//         <Card className="p-6">
+//           <CardHeader>
+//             <CardTitle>{job.title}</CardTitle>
+//             <CardDescription>
+//               {job.company} - {job.location}
+//             </CardDescription>
+//           </CardHeader>
+//           <CardContent>
+//             <p className="mb-4">{job.description}</p>
+
+//             <div className="mb-4">
+//               <h3 className="font-semibold mb-2">Roles:</h3>
+//               <ul className="list-disc list-inside">
+//                 {job.roles.map((role, i) => (
+//                   <li key={i}>{role}</li>
+//                 ))}
+//               </ul>
+//             </div>
+
+//             <div className="mb-4">
+//               <h3 className="font-semibold mb-2">Responsibilities:</h3>
+//               <ul className="list-disc list-inside">
+//                 {job.responsibilities.map((resp, i) => (
+//                   <li key={i}>{resp}</li>
+//                 ))}
+//               </ul>
+//             </div>
+
+//             <div>
+//               <h3 className="font-semibold mb-2">Skills Required:</h3>
+//               <div className="flex flex-wrap gap-2">
+//                 {job.skills.map((skill) => (
+//                   <Badge key={skill} variant="outline">
+//                     {skill}
+//                   </Badge>
+//                 ))}
+//               </div>
+//             </div>
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// }
