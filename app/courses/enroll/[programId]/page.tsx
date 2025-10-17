@@ -8,14 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, CheckCircle, Gift, CreditCard, User, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function CourseEnrollPage() {
   const router = useRouter();
   const { programId } = useParams();
+    const [isLoading, setIsLoading] = useState(false)
   const { user } = useUser();
   
   const [course, setCourse] = useState<any>(null);
@@ -167,207 +171,575 @@ export default function CourseEnrollPage() {
     }
   };
 
-  return (
-    <div className="container max-w-6xl py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-      {/* Left: Enrollment Form */}
-      <div className="md:col-span-2">
-        <h1 className="text-2xl font-semibold mb-2">
-          Enroll in {course.title}
-        </h1>
-        <p className="text-muted-foreground mb-6">
-          Complete your enrollment details below.
-        </p>
+    const handleInputChange = (field: string, value: string | boolean) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
 
-        <form onSubmit={handlePayment} className="space-y-6">
+      const isFormValid =
+        formData.firstName &&
+        formData.lastName &&
+        formData.email &&
+        formData.phone &&
+        formData.city &&
+        formData.state &&
+        formData.education &&
+        formData.experience &&
+        formData.agreeTerms;
+
+  return (
+    <div className="container py-8 max-w-6xl">
+      {/* Header */}
+      <div className="mb-8">
+        <Link
+          href="/courses"
+          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Courses
+        </Link>
+        <h1 className="text-3xl font-bold">Enroll in {course?.title}</h1>
+        <p className="text-muted-foreground mt-2">
+          Complete your enrollment to start your journey in {course?.title}
+        </p>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Enrollment Form */}
+        <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>🧍 Personal Information</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Personal Information
+              </CardTitle>
+              <CardDescription>
+                Please provide your details to complete the enrollment process
+              </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
+            <CardContent>
+              <form onSubmit={handlePayment} className="space-y-6">
+                {/* Basic Information */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">First Name *</Label>
+                    <Input
+                      id="firstName"
+                      value={formData.firstName}
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Input
+                      id="lastName"
+                      value={formData.lastName}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="whatsapp">WhatsApp Number</Label>
+                      <Input
+                        id="whatsapp"
+                        type="tel"
+                        value={formData.whatsapp}
+                        onChange={(e) =>
+                          handleInputChange("whatsapp", e.target.value)
+                        }
+                        placeholder="Same as phone if different"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedin">LinkedIn Profile</Label>
+                    <Input
+                      id="linkedin"
+                      value={formData.linkedin}
+                      onChange={(e) =>
+                        handleInputChange("linkedin", e.target.value)
+                      }
+                      placeholder="https://linkedin.com/in/your-profile"
+                    />
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="city">City *</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) =>
+                        handleInputChange("city", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="state">State *</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) =>
+                        handleInputChange("state", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Background Information */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="education">Highest Education *</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        handleInputChange("education", value)
+                      }
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your education level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high-school">High School</SelectItem>
+                        <SelectItem value="diploma">Diploma</SelectItem>
+                        <SelectItem value="bachelors">
+                          Bachelor's Degree
+                        </SelectItem>
+                        <SelectItem value="masters">Master's Degree</SelectItem>
+                        <SelectItem value="phd">PhD</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="experience">Work Experience *</Label>
+                    <Select
+                      onValueChange={(value) =>
+                        handleInputChange("experience", value)
+                      }
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your experience level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fresher">
+                          Fresher (0 years)
+                        </SelectItem>
+                        <SelectItem value="1-2">1-2 years</SelectItem>
+                        <SelectItem value="3-5">3-5 years</SelectItem>
+                        <SelectItem value="5+">5+ years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="motivation">
+                      Why do you want to join this program?
+                    </Label>
+                    <Textarea
+                      id="motivation"
+                      value={formData.motivation}
+                      onChange={(e) =>
+                        handleInputChange("motivation", e.target.value)
+                      }
+                      placeholder="Tell us about your goals and motivation..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                {/* Terms and Conditions */}
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="terms"
+                      checked={formData.agreeTerms}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("agreeTerms", checked as boolean)
+                      }
+                    />
+                    <Label htmlFor="terms" className="text-sm leading-relaxed">
+                      I agree to the{" "}
+                      <Link
+                        href="/terms"
+                        className="text-primary hover:underline"
+                      >
+                        Terms and Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        href="/privacy"
+                        className="text-primary hover:underline"
+                      >
+                        Privacy Policy
+                      </Link>
+                      *
+                    </Label>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="marketing"
+                      checked={formData.agreeMarketing}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("agreeMarketing", checked as boolean)
+                      }
+                    />
+                    <Label
+                      htmlFor="marketing"
+                      className="text-sm leading-relaxed"
+                    >
+                      I agree to receive marketing communications and course
+                      updates
+                    </Label>
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="lg"
+                  disabled={!isFormValid || isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      Submit Enrollment
+                      <CreditCard className="h-4 w-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Program Summary */}
+        <div className="lg:col-span-1">
+          <Card className="sticky top-8">
+            <CardHeader>
+              <CardTitle className="text-lg">{course?.title}</CardTitle>
+              <CardDescription>
+                {course.duration} • Comprehensive Training
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Pricing */}
               <div>
-                <Label>First Name</Label>
-                <Input
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`text-2xl font-bold`}>₹{course?.price.toLocaleString()}</span>
+                </div>
               </div>
-              <div>
-                <Label>Last Name</Label>
-                <Input
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Email Address</Label>
-                <Input
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Phone Number</Label>
-                <Input
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>WhatsApp Number</Label>
-                <Input
-                  name="whatsapp"
-                  value={formData.whatsapp}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <Label>LinkedIn Profile</Label>
-                <Input
-                  name="linkedin"
-                  placeholder="https://linkedin.com/in/username"
-                  value={formData.linkedin}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <Label>City</Label>
-                <Input
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>State</Label>
-                <Input
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Highest Education</Label>
-                <Input
-                  name="education"
-                  placeholder="e.g. Bachelors, Masters"
-                  value={formData.education}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label>Work Experience</Label>
-                <Input
-                  name="experience"
-                  placeholder="e.g. Fresher, 1-2 years"
-                  value={formData.experience}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label>Motivation</Label>
-                <Textarea
-                  name="motivation"
-                  placeholder="Why do you want to join this course?"
-                  value={formData.motivation}
-                  onChange={handleChange}
-                />
+
+              <Separator />
+
+              {/* What's Included */}
+              {/* <div>
+                <h4 className="font-medium mb-3">What's Included:</h4>
+                <div className="space-y-2">
+                  {course.highlights.map((item: string, index: number) => (
+                    <div key={index} className="flex items-start gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div> */}
+
+              <Separator />
+
+              {/* Technologies */}
+              {/* <div>
+                <h4 className="font-medium mb-3">Technologies You'll Learn:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {course.features.map((tech: string, index: number) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              </div> */}
+
+              {/* Referral Benefits */}
+              {/* <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-200">
+                <h4 className="font-medium text-purple-900 mb-2 flex items-center gap-2">
+                  <Gift className="h-4 w-4" />
+                  Referral Benefits
+                </h4>
+                <p className="text-sm text-purple-700 mb-2">
+                  Have a referral code? Get instant benefits!
+                </p>
+                <ul className="text-xs text-purple-600 space-y-1">
+                  <li>• 10% instant discount on course fee</li>
+                  <li>• Priority support during enrollment</li>
+                  <li>• Exclusive community access</li>
+                  <li>• Fast-track admission process</li>
+                </ul>
+              </div> */}
+
+              {/* Support */}
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 mb-2">Need Help?</h4>
+                <p className="text-sm text-blue-700 mb-3">
+                  Have questions about the program? Our counselors are here to
+                  help.
+                </p>
+                <a
+                  href="https://wa.me/918935069570?text=Hey%20*Enginow*%20!%20I%20need%20a%20help"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="outline" size="sm" className="w-full">
+                    Chat with Counselor
+                  </Button>
+                </a>
               </div>
             </CardContent>
           </Card>
-
-
-          {/* Terms & Submit */}
-          <div className="space-y-3">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                name="agreeTerms"
-                checked={formData.agreeTerms}
-                onCheckedChange={(v) =>
-                  setFormData((prev) => ({ ...prev, agreeTerms: v as boolean }))
-                }
-              />
-              <Label>
-                I agree to the Terms and Conditions and Privacy Policy.
-              </Label>
-            </div>
-
-            <div className="flex items-start gap-2">
-              <Checkbox
-                name="agreeMarketing"
-                checked={formData.agreeMarketing}
-                onCheckedChange={(v) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    agreeMarketing: v as boolean,
-                  }))
-                }
-              />
-              <Label>
-                I agree to receive marketing communications and updates.
-              </Label>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full"
-              size="lg"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  Pay ₹{course.price.toLocaleString()}{" "}
-                  <CheckCircle2 className="h-4 w-4 ml-2" />
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-      </div>
-
-      {/* Right: Summary Card */}
-      <div>
-        <Card className="sticky top-20">
-          <CardHeader>
-            <CardTitle>{course.title}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {course.description}
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Separator className="my-3" />
-            <p className="text-3xl font-semibold mb-2">
-              ₹{course.price.toLocaleString()}
-            </p>
-            <p className="text-sm mb-3 text-muted-foreground">
-              What’s included:
-            </p>
-            <ul className="list-disc list-inside text-sm space-y-1 mb-4">
-              {course.includes.map((item: string, i: number) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        </div>
       </div>
     </div>
+    // <div className="container max-w-6xl py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+    //   {/* Left: Enrollment Form */}
+    //   <div className="md:col-span-2">
+    //     <h1 className="text-2xl font-semibold mb-2">
+    //       Enroll in {course.title}
+    //     </h1>
+    //     <p className="text-muted-foreground mb-6">
+    //       Complete your enrollment details below.
+    //     </p>
+
+    //     <form onSubmit={handlePayment} className="space-y-6">
+    //       <Card>
+    //         <CardHeader>
+    //           <CardTitle>🧍 Personal Information</CardTitle>
+    //         </CardHeader>
+    //         <CardContent className="grid gap-4 md:grid-cols-2">
+    //           <div>
+    //             <Label>First Name</Label>
+    //             <Input
+    //               name="firstName"
+    //               value={formData.firstName}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>Last Name</Label>
+    //             <Input
+    //               name="lastName"
+    //               value={formData.lastName}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>Email Address</Label>
+    //             <Input
+    //               name="email"
+    //               type="email"
+    //               value={formData.email}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>Phone Number</Label>
+    //             <Input
+    //               name="phone"
+    //               value={formData.phone}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>WhatsApp Number</Label>
+    //             <Input
+    //               name="whatsapp"
+    //               value={formData.whatsapp}
+    //               onChange={handleChange}
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>LinkedIn Profile</Label>
+    //             <Input
+    //               name="linkedin"
+    //               placeholder="https://linkedin.com/in/username"
+    //               value={formData.linkedin}
+    //               onChange={handleChange}
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>City</Label>
+    //             <Input
+    //               name="city"
+    //               value={formData.city}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>State</Label>
+    //             <Input
+    //               name="state"
+    //               value={formData.state}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>Highest Education</Label>
+    //             <Input
+    //               name="education"
+    //               placeholder="e.g. Bachelors, Masters"
+    //               value={formData.education}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div>
+    //             <Label>Work Experience</Label>
+    //             <Input
+    //               name="experience"
+    //               placeholder="e.g. Fresher, 1-2 years"
+    //               value={formData.experience}
+    //               onChange={handleChange}
+    //               required
+    //             />
+    //           </div>
+    //           <div className="md:col-span-2">
+    //             <Label>Motivation</Label>
+    //             <Textarea
+    //               name="motivation"
+    //               placeholder="Why do you want to join this course?"
+    //               value={formData.motivation}
+    //               onChange={handleChange}
+    //             />
+    //           </div>
+    //         </CardContent>
+    //       </Card>
+
+    //       {/* Terms & Submit */}
+    //       <div className="space-y-3">
+    //         <div className="flex items-start gap-2">
+    //           <Checkbox
+    //             name="agreeTerms"
+    //             checked={formData.agreeTerms}
+    //             onCheckedChange={(v) =>
+    //               setFormData((prev) => ({ ...prev, agreeTerms: v as boolean }))
+    //             }
+    //           />
+    //           <Label>
+    //             I agree to the Terms and Conditions and Privacy Policy.
+    //           </Label>
+    //         </div>
+
+    //         <div className="flex items-start gap-2">
+    //           <Checkbox
+    //             name="agreeMarketing"
+    //             checked={formData.agreeMarketing}
+    //             onCheckedChange={(v) =>
+    //               setFormData((prev) => ({
+    //                 ...prev,
+    //                 agreeMarketing: v as boolean,
+    //               }))
+    //             }
+    //           />
+    //           <Label>
+    //             I agree to receive marketing communications and updates.
+    //           </Label>
+    //         </div>
+
+    //         <Button
+    //           type="submit"
+    //           className="w-full"
+    //           size="lg"
+    //           disabled={loading}
+    //         >
+    //           {loading ? (
+    //             <>
+    //               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+    //               Processing...
+    //             </>
+    //           ) : (
+    //             <>
+    //               Pay ₹{course.price.toLocaleString()}{" "}
+    //               <CheckCircle2 className="h-4 w-4 ml-2" />
+    //             </>
+    //           )}
+    //         </Button>
+    //       </div>
+    //     </form>
+    //   </div>
+
+    //   {/* Right: Summary Card */}
+    //   <div>
+    //     <Card className="sticky top-20">
+    //       <CardHeader>
+    //         <CardTitle>{course.title}</CardTitle>
+    //         <p className="text-sm text-muted-foreground">
+    //           {course.description}
+    //         </p>
+    //       </CardHeader>
+    //       <CardContent>
+    //         <Separator className="my-3" />
+    //         <p className="text-3xl font-semibold mb-2">
+    //           ₹{course.price.toLocaleString()}
+    //         </p>
+    //         <p className="text-sm mb-3 text-muted-foreground">
+    //           What’s included:
+    //         </p>
+    //         <ul className="list-disc list-inside text-sm space-y-1 mb-4">
+    //           {course.includes.map((item: string, i: number) => (
+    //             <li key={i}>{item}</li>
+    //           ))}
+    //         </ul>
+    //       </CardContent>
+    //     </Card>
+    //   </div>
+    // </div>
   );
 }
 

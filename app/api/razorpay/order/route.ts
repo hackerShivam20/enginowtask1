@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     });
 
     const options = {
-      amount,
+      amount : amount * 100, // amount in the smallest currency unit
       currency: "INR",
       receipt: `receipt_${programId}_${Date.now()}`,
     };

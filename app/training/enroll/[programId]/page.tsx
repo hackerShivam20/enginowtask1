@@ -103,11 +103,6 @@ export default function EnrollmentPage() {
       ...prev,
       [field]: value,
     }))
-
-    // Reset referral validation when code changes
-    if (field === "referralCode") {
-      setReferralCodeValid(null)
-    }
   }
 
   const validateReferralCode = async (code: string) => {
