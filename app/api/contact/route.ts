@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       auth: {
         // change .env.local file according to app key or mail id
         user: process.env.GMAIL_USER || "st19932000@gmail.com",
-        pass: process.env.GMAIL_APP_PASSWORD || "gxsrqsrbkjigkpzb",
+        pass: process.env.GMAIL_PASS || "gxsrqsrbkjigkpzb",
       },
     });
 

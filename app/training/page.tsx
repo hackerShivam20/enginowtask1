@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useUser } from "@clerk/nextjs"
 
 interface TrainingProgram {
   id: string
@@ -27,10 +28,39 @@ interface TrainingProgram {
 }
 
 export default function TrainingPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [programs, setPrograms] = useState<TrainingProgram[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { user, isLoaded } = useUser();
+  const [enrolledIds, setEnrolledIds] = useState<string[]>([]);
+  const [loadingEnrollments, setLoadingEnrollments] = useState(true);
+
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [programs, setPrograms] = useState<TrainingProgram[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🔹 Fetch user enrollments dynamically
+  useEffect(() => {
+    if (!isLoaded || !user) return;
+
+    const fetchEnrollments = async () => {
+      try {
+        const res = await fetch("/api/enrollments/user");
+        const result = await res.json();
+
+        if (result.success) {
+          const ids = result.data.map((e: any) => e.programId);
+          setEnrolledIds(ids);
+        } else {
+          console.error("Error fetching enrollments:", result.error);
+        }
+      } catch (err) {
+        console.error("Error loading enrollments:", err);
+      } finally {
+        setLoadingEnrollments(false);
+      }
+    };
+
+    fetchEnrollments();
+  }, [isLoaded, user]);
 
   const categories = [
     { id: "all", label: "All Programs" },
@@ -39,31 +69,33 @@ export default function TrainingPage() {
     { id: "ai", label: "AI & ML" },
     { id: "infrastructure", label: "DevOps & Cloud" },
     { id: "security", label: "Cybersecurity" },
-  ]
+  ];
 
   useEffect(() => {
-    fetchPrograms()
-  }, [selectedCategory])
+    fetchPrograms();
+  }, [selectedCategory]);
 
   const fetchPrograms = async () => {
     try {
-      setLoading(true)
-      const response = await fetch(`/api/training/programs?category=${selectedCategory}`)
-      const result = await response.json()
+      setLoading(true);
+      const response = await fetch(
+        `/api/training/programs?category=${selectedCategory}`
+      );
+      const result = await response.json();
 
       if (result.success) {
-        setPrograms(result.data)
-        setError(null)
+        setPrograms(result.data);
+        setError(null);
       } else {
-        setError(result.error || "Failed to fetch programs")
+        setError(result.error || "Failed to fetch programs");
       }
     } catch (err) {
-      setError("Failed to fetch programs")
-      console.error("Error fetching programs:", err)
+      setError("Failed to fetch programs");
+      console.error("Error fetching programs:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -71,11 +103,13 @@ export default function TrainingPage() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground">Loading training programs...</p>
+            <p className="text-muted-foreground">
+              Loading training programs...
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -86,7 +120,7 @@ export default function TrainingPage() {
           <Button onClick={fetchPrograms}>Try Again</Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -97,8 +131,9 @@ export default function TrainingPage() {
           Training & Internship Programs
         </h1>
         <p className="max-w-3xl mx-auto text-muted-foreground md:text-xl">
-          Transform your career with industry-focused training programs. Learn from experts, work on real projects, and
-          get certified in cutting-edge technologies.
+          Transform your career with industry-focused training programs. Learn
+          from experts, work on real projects, and get certified in cutting-edge
+          technologies.
         </p>
       </div>
 
@@ -107,7 +142,11 @@ export default function TrainingPage() {
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 bg-muted/50">
             {categories.map((category) => (
-              <TabsTrigger key={category.id} value={category.id} className="text-sm">
+              <TabsTrigger
+                key={category.id}
+                value={category.id}
+                className="text-sm"
+              >
                 {category.label}
               </TabsTrigger>
             ))}
@@ -118,14 +157,21 @@ export default function TrainingPage() {
       {/* Programs Grid */}
       {programs.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No programs found for the selected category.</p>
+          <p className="text-muted-foreground">
+            No programs found for the selected category.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {programs.map((program) => (
-            <Card key={program.id} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+            <Card
+              key={program.id}
+              className="relative overflow-hidden hover:shadow-lg transition-shadow"
+            >
               {program.popular && (
-                <Badge className="absolute top-4 right-4 bg-orange-500 hover:bg-orange-600 z-10">Popular</Badge>
+                <Badge className="absolute top-4 right-4 bg-orange-500 hover:bg-orange-600 z-10">
+                  Popular
+                </Badge>
               )}
 
               <div className="aspect-video bg-gradient-to-br from-purple-100 to-blue-100 relative">
@@ -139,8 +185,12 @@ export default function TrainingPage() {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
-                    <CardTitle className="text-lg line-clamp-2">{program.title}</CardTitle>
-                    <CardDescription className="mt-1">{program.description}</CardDescription>
+                    <CardTitle className="text-lg line-clamp-2">
+                      {program.title}
+                    </CardTitle>
+                    <CardDescription className="mt-1">
+                      {program.description}
+                    </CardDescription>
                   </div>
                 </div>
 
@@ -165,40 +215,63 @@ export default function TrainingPage() {
                   <h4 className="font-medium mb-2">What you'll learn:</h4>
                   <div className="grid grid-cols-2 gap-1">
                     {program.features.slice(0, 4).map((feature, index) => (
-                      <div key={index} className="flex items-center gap-1 text-sm">
+                      <div
+                        key={index}
+                        className="flex items-center gap-1 text-sm"
+                      >
                         <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
                         <span className="truncate">{feature}</span>
                       </div>
                     ))}
                   </div>
                   {program.features.length > 4 && (
-                    <p className="text-xs text-muted-foreground mt-1">+{program.features.length - 4} more topics</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      +{program.features.length - 4} more topics
+                    </p>
                   )}
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl font-bold">₹{program.price.toLocaleString()}</span>
+                      <span className="text-2xl font-bold">
+                        ₹{program.price.toLocaleString()}
+                      </span>
                       <span className="text-sm text-muted-foreground line-through">
                         ₹{program.originalPrice.toLocaleString()}
                       </span>
                     </div>
                     <p className="text-xs text-green-600 font-medium">
-                      Save ₹{(program.originalPrice - program.price).toLocaleString()}
+                      Save ₹
+                      {(program.originalPrice - program.price).toLocaleString()}
                     </p>
                   </div>
                   <Badge variant="outline">{program.level}</Badge>
                 </div>
               </CardContent>
 
-              <CardFooter>-
-                <Link href={`/training/enroll/${program.id}`} className="w-full">
-                  <Button className="w-full">
-                    Enroll Now
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </Link>
+              <CardFooter>
+                {enrolledIds.includes(program.id) ? (
+                  <Link
+                    href={`/training/learn/${program.id}`}
+                    className="w-full"
+                  >
+                    <Button variant="secondary" className="w-full">
+                      Continue Learning
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/training/enroll/${program.id}`}
+                    className="w-full"
+                  >
+                    <Button className="w-full">
+                      Enroll Now
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                )}
               </CardFooter>
             </Card>
           ))}
@@ -207,23 +280,25 @@ export default function TrainingPage() {
 
       {/* Bottom CTA */}
       <div className="mt-16 text-center bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8">
-        <h2 className="text-2xl font-bold mb-4">Not sure which program is right for you?</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Not sure which program is right for you?
+        </h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Book a free consultation with our career counselors to find the perfect training program that aligns with your
-          goals and experience level.
+          Book a free consultation with our career counselors to find the
+          perfect training program that aligns with your goals and experience
+          level.
         </p>
         <Link
-    href="https://wa.me/918935069570?text=Hey%20*Enginow*%20!%20I%20need%20a%20help"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-        <Button size="lg" variant="outline">
-          <Calendar className="h-4 w-4 mr-2" />
-          Book Free Consultation
-        </Button>
-
-      </Link>
+          href="https://wa.me/918935069570?text=Hey%20*Enginow*%20!%20I%20need%20a%20help"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button size="lg" variant="outline">
+            <Calendar className="h-4 w-4 mr-2" />
+            Book Free Consultation
+          </Button>
+        </Link>
       </div>
     </div>
-  )
+  );
 }

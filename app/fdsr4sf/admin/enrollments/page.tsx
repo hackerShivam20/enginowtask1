@@ -55,6 +55,7 @@ interface Enrollment {
   enrollmentDate: string
   createdAt: string
   updatedAt?: string
+  type: "training" | "course"
 }
 
 interface Stats {

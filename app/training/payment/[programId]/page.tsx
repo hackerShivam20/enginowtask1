@@ -75,62 +75,102 @@ export default function PaymentPage() {
     }
   };
 
-  const handlePayment = async () => {
-    if (!program) return;
-    setIsProcessing(true);
+// replace the existing handlePayment with this (client-side code in page.tsx)
+const handlePayment = async () => {
+  if (!program) return;
+  setIsProcessing(true);
 
-    try {
-      const res = await fetch("/api/razorpay/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: program.price * 100 }), // in paise
+  try {
+    // Call the existing order endpoint (same one used by courses)
+    const res = await fetch("/api/razorpay/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // razorpay/order route expects an 'amount' (in paise) or numeric value based on implementation.
+      // program.price seems to be rupees in your code, so convert to paise.
+      body: JSON.stringify({ amount: Math.round(program.price * 100), programId: program.id }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.message || "Failed to create order");
+    }
+
+    const data = await res.json();
+    // your order route returns { success: true, order }
+    const order = data?.order ?? data?.order?.id ? data.order : null;
+    if (!order || !order.id) throw new Error("Order creation failed");
+
+    // load razorpay sdk if needed (you already include Script in the file — this is safe as-is)
+    if (!(window as any).Razorpay) {
+      await new Promise<void>((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = "https://checkout.razorpay.com/v1/checkout.js";
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error("Failed to load Razorpay SDK"));
+        document.body.appendChild(s);
       });
-      const orderData = await res.json();
+    }
 
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: program.price * 100,
-        currency: "INR",
-        name: "Shivam Tiwari",
-        description: program.title,
-        order_id: orderData.orderId,
-        handler: async function (response: any) {
-          // ✅ Payment success
-          toast({
-            title: "Payment Successful 🎉",
-            description: `You are now enrolled in ${program.title}`,
+    const options: any = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // ensure NEXT_PUBLIC_RAZORPAY_KEY_ID is set
+      amount: Math.round(program.price * 100),
+      currency: "INR",
+      name: "Your Platform Name", // update as needed
+      description: program.title || `Enrollment: ${program.id}`,
+      order_id: order.id,
+      handler: async function (response: any) {
+        // response has razorpay_payment_id, razorpay_order_id, razorpay_signature
+        try {
+          const verifyRes = await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              // If your verify route requires enrollment or user info, pass it here.
+              // The existing verify route implementation in your repo expects to be able to deduce user via Clerk session server-side.
+            }),
           });
 
-          setPaymentSuccess(true);
+          const verifyData = await verifyRes.json();
+          if (!verifyRes.ok || !verifyData?.success) {
+            throw new Error(verifyData?.message || "Payment verification failed");
+          }
 
-          // ✅ Auto redirect after 3 seconds
-          setTimeout(() => {
-            router.push(
-              `/api/training/programs/${params.programId}`
-            );
-          }, 3000);
-        },
+          // on success redirect to dashboard or trainings list
+          router.push("/dashboard"); // or the path you prefer
+        } catch (err: any) {
+          console.error("Verification failed:", err);
+          toast({
+            title: "Payment Verification Failed",
+            description: "Payment succeeded but verification failed. Contact support.",
+            variant: "destructive",
+          });
+        }
+      },
         prefill: {
-          name: "Shivam Tiwari",
-          email: "thor@gmail.com",
-          contact: "1234567890",
-        },
-        theme: {
-          color: "#2563eb",
-        },
-      };
+        name: "", // Provide user name here if available
+        email: "", // Provide user email here if available
+        contact: "", // Provide user phone here if available
+      },
+      notes: { programId: program.id },
+    };
 
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", function (response: any) {
-        alert("Payment failed: " + response.error.description);
-      });
-      rzp.open();
-    } catch (err) {
-      console.error("Payment failed", err);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  } catch (error: any) {
+    console.error("Payment error:", error);
+    toast({
+      title: "Payment Error",
+      description: error.message || "Payment initialization failed",
+      variant: "destructive",
+    });
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   if (!program) {
     return (

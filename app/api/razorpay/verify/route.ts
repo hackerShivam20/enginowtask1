@@ -1,36 +1,87 @@
 // app/api/razorpay/verify/route.ts
-import { NextResponse } from "next/server";
-import crypto from "crypto";
+import { NextResponse } from "next/server"
+import crypto from "crypto"
+import connectDB from "@/lib/mongodb"
+import Enrollment from "@/models/Enrollment"
+import { currentUser } from "@clerk/nextjs/server"
 
-export async function POST(request: Request) {
+/**
+ * POST /api/razorpay/verify
+ * Called after Razorpay payment success
+ */
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, enrollmentData } = body;
+    await connectDB()
 
-    // compute expected signature
-    const expected = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET as string)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
+    const body = await req.json()
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      programId,
+      formData,
+      course,
+      amount,
+    } = body
 
-    if (expected !== razorpay_signature) {
-      return NextResponse.json({ success: false, error: "Invalid signature" }, { status: 400 });
+    // ✅ Verify logged-in user
+    const authUser = await currentUser()
+    if (!authUser) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      )
     }
 
-    // Signature valid -> create enrollment in DB (or call your existing /api/enrollments logic)
-    // Replace the following with your DB or model code:
-    // const saved = await createEnrollmentInDB({ ...enrollmentData, paymentId: razorpay_payment_id, orderId: razorpay_order_id });
+    // ✅ Verify Razorpay signature
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET as string)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .digest("hex")
 
-    // Example: if you already have an API route /api/enrollments that accepts POST,
-    // you can call it internally (server-side) or directly call your DB model.
-    // const enrollRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/enrollments`, { ... });
+    if (expectedSignature !== razorpay_signature) {
+      return NextResponse.json(
+        { success: false, message: "Invalid payment signature" },
+        { status: 400 }
+      )
+    }
 
-    // For demo:
-    const saved = { id: `enr_${Date.now()}`, ...enrollmentData };
+    // ✅ Generate a unique enrollmentId
+    const timestamp = Date.now().toString().slice(-6)
+    const random = Math.random().toString(36).substring(2, 5).toUpperCase()
+    const enrollmentId = `ENR${timestamp}${random}`
 
-    return NextResponse.json({ success: true, enrollment: saved });
-  } catch (err: any) {
-    console.error("verify error:", err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    // ✅ Create or update enrollment in MongoDB
+    const enrollment = await Enrollment.findOneAndUpdate(
+      {
+        razorpayOrderId: razorpay_order_id, // prevent duplicate saves
+      },
+      {
+        $set: {
+          userId: authUser.id,
+          programId,
+          enrollmentId,
+          razorpayOrderId: razorpay_order_id,
+          razorpayPaymentId: razorpay_payment_id,
+          paymentStatus: "completed",
+          status: "confirmed",
+          enrollmentDate: new Date(),
+          ...formData, // all user-provided form fields
+        },
+      },
+      { upsert: true, new: true }
+    )
+
+    return NextResponse.json({
+      success: true,
+      message: "✅ Payment verified & enrollment saved successfully",
+      enrollment,
+    })
+  } catch (error) {
+    console.error("Razorpay verification error:", error)
+    return NextResponse.json(
+      { success: false, message: "Server error", error: String(error) },
+      { status: 500 }
+    )
   }
 }

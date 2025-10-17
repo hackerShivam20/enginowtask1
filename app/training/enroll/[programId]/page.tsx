@@ -14,9 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import toast from "react-hot-toast";
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useEnrollment } from "@/context/EnrollmentContext"
+import { useUser } from "@clerk/nextjs"
 
 interface TrainingProgram {
   id: string
@@ -31,14 +33,20 @@ interface TrainingProgram {
 export default function EnrollmentPage() {
 
   const { setProgramData } = useEnrollment()
-  const params = useParams()
+  const { programId } = useParams()
   const router = useRouter()
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+
   const { toast } = useToast()
+
   const [isLoading, setIsLoading] = useState(false)
   const [programLoading, setProgramLoading] = useState(true)
   const [program, setProgram] = useState<TrainingProgram | null>(null)
+
   const [referralCodeValid, setReferralCodeValid] = useState<boolean | null>(null)
   const [checkingReferral, setCheckingReferral] = useState(false)
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -58,12 +66,12 @@ export default function EnrollmentPage() {
 
   useEffect(() => {
     fetchProgram()
-  }, [params.programId])
+  }, [programId])
 
   const fetchProgram = async () => {
     try {
       setProgramLoading(true)
-      const response = await fetch(`/api/training/programs/${params.programId}`)
+      const response = await fetch(`/api/training/programs/${programId}`)
       const result = await response.json()
 
       if (result.success) {
@@ -155,56 +163,95 @@ export default function EnrollmentPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handlePayment = async (e: any) => {
+    e.preventDefault();
+
+    if (!formData.agreeTerms) {
+      toast({
+        title: "You must agree to the Terms and Conditions",
+        description: "Please read and accept the terms to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      const enrollmentData = {
-        ...formData,
-        programId: params.programId as string,
-        referralCodeValid: referralCodeValid,
-      }
+      setLoading(true);
 
-      const response = await fetch("/api/enrollments", {
+      // 1️⃣ Create Razorpay order
+
+      const finalPrice = referralCodeValid ? Math.round(program!.price * 0.9) : program?.price;
+      const orderRes = await fetch("/api/razorpay/order", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: (finalPrice ?? 0) * 100,
+          programId: programId,
+        }),
+      });
+
+      const { order } = await orderRes.json();
+
+      // 2️⃣ Open Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: "INR",
+        name: "Enginow",
+        description: program?.title,
+        order_id: order.id,
+        handler: async (response: any) => {
+          const verifyRes = await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...response,
+              programId,
+              enrollmentId: `ENR_${Date.now()}`,
+              formData,
+              amount: program?.price,
+            }),
+          });
+
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            toast({
+              title: "Enrollment Successful!",
+              description:
+                "Congratulations! You have successfully enrolled in the program.",
+              variant: "default",
+            });
+            router.push("/user/dashboard");
+          } else {
+            toast({
+              title: "Payment Verification Failed",
+              description:
+                "The payment could not be verified. Please try again.",
+              variant: "destructive",
+            });
+          }
         },
-        body: JSON.stringify(enrollmentData),
-      })
+        prefill: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: { color: "#6366f1" },
+      };
 
-      const result = await response.json()
-
-      if (result.success) {
-        toast({
-          title: "Enrollment Successful!",
-          description:
-            "Your enrollment has been submitted successfully. You will receive a confirmation email shortly.",
-        })
-
-        // Redirect to a success page or back to training
-        setTimeout(() => {
-          router.push("/training")
-        }, 2000)
-      } else {
-        toast({
-          title: "Enrollment Failed",
-          description: result.error || "Failed to submit enrollment",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      console.error("Enrollment error:", error)
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Payment Verification Failed",
+        description: "The payment could not be verified. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const isFormValid =
     formData.firstName &&
@@ -301,7 +348,7 @@ export default function EnrollmentPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handlePayment} className="space-y-6">
                 {/* Basic Information */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
@@ -601,14 +648,6 @@ export default function EnrollmentPage() {
                   className="w-full"
                   size="lg"
                   disabled={!isFormValid || isLoading}
-                  onClick={(e) => {
-                    if (!isFormValid) {
-                      e.preventDefault();
-                    } else {
-                      handleProceed();
-                      router.push(`/training/payment/${program.id}`);
-                    }
-                  }}
                 >
                   {isLoading ? (
                     <>

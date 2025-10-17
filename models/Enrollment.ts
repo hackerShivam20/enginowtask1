@@ -1,6 +1,9 @@
 import mongoose from "mongoose"
 
 export interface IEnrollment extends mongoose.Document {
+  userId: string                // ✅ Add this line
+  razorpayOrderId?: string      // ✅ Optional
+  razorpayPaymentId?: string 
   enrollmentId: string
   programId: string
   firstName: string
@@ -21,6 +24,7 @@ export interface IEnrollment extends mongoose.Document {
   agreeMarketing?: boolean
   status: "pending" | "confirmed" | "completed" | "cancelled"
   paymentStatus: "pending" | "completed" | "failed" | "refunded"
+  type: "training" | "course"
   enrollmentDate: Date
   createdAt: Date
   updatedAt: Date
@@ -33,6 +37,20 @@ const enrollmentSchema = new mongoose.Schema<IEnrollment>(
       required: [true, "Program ID is required"],
       trim: true,
     },
+      userId: {
+    type: String, // Clerk user id
+    required: true,
+    trim: true,
+  },
+  razorpayOrderId: {
+    type: String,
+    trim: true,
+  },
+  razorpayPaymentId: {
+    type: String,
+    trim: true,
+  },
+
     enrollmentId: {
       type: String,
       unique: true,

@@ -78,7 +78,7 @@ export default function CoursePaymentPage() {
 
     try {
       // Create order on backend
-      const res = await fetch("/api/razorpay/create-order", {
+      const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: program.price * 100 }), // in paise
@@ -102,7 +102,7 @@ export default function CoursePaymentPage() {
 
           // redirect after success
           setTimeout(() => {
-            router.push(`/courses/enroll/${params.programId}`);
+            router.push(`/courses`);
           }, 3000);
         },
         prefill: {
@@ -209,7 +209,7 @@ export default function CoursePaymentPage() {
                   >
                     {isProcessing
                       ? "Processing..."
-                      : `Pay ₹${program.price.toLocaleString()}`}
+                      : `Pay ${program.price.toLocaleString()}`}
                   </Button>
                 )}
               </div>
@@ -251,7 +251,7 @@ export default function CoursePaymentPage() {
               <div className="space-y-2">
                 <div className="flex justify-between font-medium text-lg">
                   <span>Total</span>
-                  <span>₹{program.price.toLocaleString()}</span>
+                  <span>{program.price.toLocaleString()}</span>
                 </div>
               </div>
             </CardContent>

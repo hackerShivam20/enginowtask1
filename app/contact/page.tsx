@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { toast } from "@/components/ui/use-toast"
+// import { toast } from "@/components/ui/use-toast"
+import toast from "react-hot-toast"
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -31,11 +32,7 @@ export default function ContactPage() {
     
     // Validate form data
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      })
+      toast.error("Please fill in all required fields.")
       return
     }
 
@@ -53,32 +50,27 @@ export default function ContactPage() {
       const result = await response.json()
 
       if (result.success) {
-        toast({
-          title: "Message Sent Successfully! ✅",
-          description: "Thank you for contacting us. We'll get back to you soon!",
-        })
-        
-        // Reset form
+        toast.success("🎉 Message sent successfully! ✅ We'll reply soon.", {
+          icon: "✅",
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+
         setFormData({
           name: "",
           email: "",
           subject: "",
           message: "",
-        })
+        });
       } else {
-        toast({
-          title: "Failed to Send Message",
-          description: result.error || "Please try again or contact us directly at care@enginow.in",
-          variant: "destructive",
-        })
+        toast.error("❌ Failed to Send: ⚠️ Please try again or contact us directly at care@enginow.in");
       }
     } catch (error) {
       console.error("Contact form error:", error)
-      toast({
-        title: "Network Error",
-        description: "Please check your internet connection and try again.",
-        variant: "destructive",
-      })
+      toast.error("❌ Network Error: ⚠️ Please check your internet connection and try again.");
     } finally {
       setIsSubmitting(false)
     }
